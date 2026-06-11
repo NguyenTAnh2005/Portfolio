@@ -2,7 +2,8 @@
 alembic==1.18.1
 
 # Hash password bằng thuật toán bcrypt
-bcrypt==4.0.1
+# ĐÃ hạ phiên bản để tránh xung đột với passlib
+bcrypt==3.2.2
 
 # Thư viện mã hóa/giải mã, SSL, token crypto...
 cryptography==46.0.3

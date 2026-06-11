@@ -12,7 +12,7 @@ engine = create_engine(DATABASE_URL)
 
 # Crate Sesion Maker - provide session to connect to database 
 # (Tạo phiên làm việc khi kết nối đến database )
-SessionLoacl = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Create Base Class for ORM models 
 # (Tạo lớp cơ sở cho các mô hình ORM để dựa vào nó tạo ra các bảng trong database thật)
@@ -26,7 +26,7 @@ def connect_db():
     Tạo phiên từ Session Local và chạy tới database để làm việc,
     xong việc tự đóng kết nối tránh việc app quá tải thông qua lệnh yield
     """
-    db = SessionLoacl()
+    db = SessionLocal()
     try:
         yield db
     finally:

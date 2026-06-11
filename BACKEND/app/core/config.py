@@ -6,11 +6,12 @@ class Settings(BaseSettings):
     # Mã key để thực thi JWT
     SECRET_KEY: str
     # Thời hạn tồn tại tối đa của một lần cấp JWT (3 ngày)
-    ACCESS_TOKEN_EXPRIE_MINUTES: int = 4320
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 4320
     # Tài khoản Admin seed data
     ST_ADMIN_EMAIL:str
     ST_ADMIN_PASSWORD: str
     #...
+    BASE_API_URL:str
 
     class Config:
         env_file = ".env"
