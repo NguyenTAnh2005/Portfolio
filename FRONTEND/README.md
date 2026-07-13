@@ -22,6 +22,7 @@ Thực hiện code frontend, còn rất nhiều thứ để học hỏi nhưng s
 - react-icons: kho thư viện icon rất lớn, chủ yếu sẽ bổ sung các dạng icon còn thiếu của Lucide
 - framer-motion: Thư viện làm Animation. Dùng để làm các hiệu ứng như: nội dung từ từ mờ dần hiện lên khi cuộn chuột, ảnh nảy lên khi hover...
 - antd (Ant Design): Thư viện UI Component.
+- react-toastify: Thư viện thông báo alert.
 
 # 💻 Lệnh cài đặt các thư viện trên
 
@@ -35,7 +36,8 @@ npx tailwindcss init -p
 # Lệnh cài tổng hợp các thư viện
 npm install react-router-dom axios
 npm install lucide-react framer-motion
-npm install antd
+npm install antd clsx
+npm install react-toastify
 ```
 
 ## Setup dự án
@@ -46,17 +48,14 @@ Sau khỉ tải xong thì chỉnh các file cần thiết:
 
 - tailwind.config.js
 
-```bash
+```js
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {},
   },
   plugins: [],
-}
+};
 ```
 
 - trong file index.css import các đoạn code này, sau đó import file index.css vào main.jsx

@@ -8,15 +8,18 @@ import RoleUser from "../pages/admin/RoleUser";
 import SystemConfigs from "../pages/admin/SystemConfigs";
 import Timelines from "../pages/admin/Timelines";
 
+import AdminLayout from "../layout/AdminLayout";
+
+
 const  AdminRoutes = () =>{
     return(
         <Routes>
-            <Route>
+            <Route element={<AdminLayout/>}>
                 <Route index element={<DashBoard/>}/>
                 <Route path="manage-info" element={<Info/>}/>
                 <Route path="manage-timelines" element={<Timelines/>}/>
                 <Route path="manage-projects" element={<Projects/>}/>
-                <Route path="manage-achieve" element={<Achievements/>}/>
+                <Route path="manage-achieves" element={<Achievements/>}/>
                 <Route path="manage-roleuser" element={<RoleUser/>}/>
                 <Route path="manage-config" element={<SystemConfigs/>}/>
             </Route>
