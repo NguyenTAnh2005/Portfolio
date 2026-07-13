@@ -34,3 +34,46 @@
 
 - Mục tiêu: Tối ưu mã nguồn, review code hợp lý. Cắt tỉa dự án. Đưa dự án lên môi trường production.
 - Chi tiết công việc: [Chang5_List_Task.md](./Chang5_List_Task.md).
+
+## Cấu trúc thư mục (chỉ liệt kê các mục đáng chú ý):
+
+```bash
+├── 📁 BACKEND             # MÃ NGUỒN BACKEND
+│   ├── 📁 alembic         # Phần kết nối database thông qua alembic
+│   │   ├── 📁 versions    # Nơi quản lý các phiên bản của database
+│   │   ├── 🐍 env.py      # Cấu hình đường dẫn database
+│   ├── 📁 app             # Mã nguồn chính backend
+│   │   ├── 📁 core        # Các code hệ thống như: Jwt, hashpassword,...
+│   │   ├── 📁 crud        # Code CRUD database
+│   │   ├── 📁 models      # Code model tạo bảng database
+│   │   ├── 📁 routers     # Code chứa logic và các API endpoint
+│   │   ├── 📁 schemas     # Các class validate cho kết quả trả về của API
+│   │   └── 🐍 db_connection.py # Cấu hình kết nối đến DB
+│   ├── 📝 README.md
+│   ├── 🐍 main.py           # File chạy chính của Backend
+│   ├── 📄 requirements.txt. # File lưu trữ phiên bản, tên các thư viện
+│   └── 🐍 seed_data.py      # File chạy data ban đầu cần có (admin đầu tiên)
+├── 📁 DATABASE
+│   └── 📄 checking_sql.sql  # File test CRUD database (POSTGRESQL)
+├── 📁 FRONTEND              # MÃ NGUỒN FRONTEND
+│   ├── 📁 src               # Mã nguồn chính của Frontend
+│   │   ├── 📁 assets        # Nơi chứa ảnh, audio,..
+│   │   ├── 📁 components    # Các thành phần nhỏ của trang web
+│   │   ├── 📁 contexts      # Nơi lưu trữ AuthContext, lưu trữ đám mây JWT
+│   │   ├── 📁 hooks         # Hook nhà làm (VD: fetch data xong -> loading --> success or failed )
+│   │   ├── 📁 layout        # Nơi lưu trữ khung trang web của Admin và Client
+│   │   ├── 📁 pages         # Nơi chứa các page chính của Layout
+│   │   │   ├── 📁 admin
+│   │   │   ├── 📁 client
+│   │   │   └── 📄 Login.jsx
+│   │   ├── 📁 public
+│   │   │   └── 🖼️ icons.svg
+│   │   ├── 📁 routes                  # Nơi chứa điều hướng các page của trang web
+│   │   │   ├── 📄 AdminRoutes.jsx
+│   │   │   ├── 📄 AppRoutes.jsx
+│   │   │   ├── 📄 ClientRoutes.jsx
+│   │   │   └── 📄 ProtectedRoutes.jsx # Code bảo vệ điều hướng, checking Authorization
+│   │   ├── 📁 services       # Nơi gọi API, nhét tự động JWT bằng Axios
+│   │   ├── 📄 App.jsx
+│   ├── 📁 utils              # Nơi chứa các code tiện ích (xử lý chuỗi, thời gian,...)
+```

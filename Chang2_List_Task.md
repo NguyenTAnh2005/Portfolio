@@ -5,26 +5,28 @@ _Mục tiêu: Hoàn thiện luồng đăng nhập, bảo mật JWT, điều hư�
 ### Backend - Database:
 
 - Error Handling, CORS:
-  - [ ] Khởi tạo class xử lý lỗi tập trung
-  - [ ] Khởi tạo CORS (Cross-Origin Resource Sharing) làm việc với pydantic setting
+  - [x] Khởi tạo class xử lý lỗi tập trung. => [[Lưu ý phần này tại đây.]](./Note_ErrorHandling.md)
+  - [x] Khởi tạo CORS (Cross-Origin Resource Sharing) làm việc với pydantic setting
 - Security files:
-  - [ ] Xây dựng hàm mã hóa mật khẩu
-  - [ ] Xây dựng hàm tạo access token (JWT)
-  - [ ] Xây dựng hàm giải mã access token để kiếm tra quyền (get_current_user, get_current_admin)
+  - [x] Xây dựng hàm mã hóa mật khẩu
+  - [x] Xây dựng hàm tạo access token (JWT)
+  - [x] Xây dựng hàm giải mã access token để kiếm tra quyền (get_current_user, get_current_admin)
 - Auth Services:
-  - [ ] Khởi tạo User Schemas, Crud user
-  - [ ] Khởi tạo seed Data cho User để tiện cho testing.
-  - [ ] Khởi tạo Auth API, User API
-  - [ ] Chạy Backend test API, kiểm tra bằng swagger UI và postgreSQL
+  - [x] Khởi tạo User Schemas
+  - [x] Khởi tạo Crud user
+  - [x] Khởi tạo seed Data cho User để tiện cho testing.
+  - [x] Khởi tạo Auth API, User API
+  - [x] Chạy Backend test API, kiểm tra bằng swagger UI và postgreSQL
 
 ### Frontend:
 
-- Điều hướng đăng nhập:
-  - [ ] Khởi tạo AuthContext lưu trữ các trạng thái (đăng nhập, đăng xuất), lưu access_token trên localStorage.
-  - [ ] Viết Protected Routes để quản lý điều hướng.
-  - [ ] Thiết kế layout cho Admin và Client với Outlet.
-  - [ ] Tinh chỉnh lại App Routes sao cho hợp với Protected Routes.
 - Lưu trữ đăng nhập:
-  - [ ] Viết .env lưu đường dẫn chạy backend.
-  - [ ] Code service gửi req login và ứng dụng lưu access-token lên localstorage (authcontext).
-  - [ ] Thiết kế UI đơn giản cho trang đăng nhập và chạy thử test đăng nhập.
+  - [x] Viết .env lưu đường dẫn chạy backend.
+  - [x] Thiết kế UI đơn giản cho trang đăng nhập.
+  - [x] Thiết lập Axios gọi Req và trả về Res.
+
+- Điều hướng đăng nhập:
+  - [x] Khởi tạo AuthContext lưu trữ các trạng thái (đăng nhập, đăng xuất), lưu access_token trên localStorage.
+  - [x] Viết Protected Routes để quản lý điều hướng.
+  - [x] Thiết kế layout cho Admin và Client với Outlet.
+  - [x] Tinh chỉnh lại App Routes sao cho hợp với Protected Routes cũng như UI đăng nhập, đảm bảo responsive.
