@@ -13,18 +13,19 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
 - **Backend**:
   - [ ] (Nếu có thể) Tìm hiểu cách liên kết với dịch vụ lưu trữ ảnh: Cloudinary, S3,... để hỗ trợ chức năng tải ảnh lên (timeline, project, achievement).
 - **Frontend**:
-  - [ ] Thiết lập axios Config để tự động đính access_token vào header để get data từ API.
-  - [ ] Thiết lập useFetch set các trạng thái fetch dữ liệu - (loading, oke, failed).
+  - [x] Thiết lập axios Config để tự động đính access_token vào header để get data từ API.
+
+  `- [ ] Thiết lập useFetch set các trạng thái fetch dữ liệu - (loading, oke, failed). (Hiện tại ngững task này, tập làm useState + useEffect để tiếp cận dễ hơn phần này!)`
 
 ### 3.2 About me Page (Thông tin cá nhân):
 
 - **Backend**:
-  - [ ] Viết code cho model Info
-  - [ ] Khởi tạo và chạy seed Data của đối tượng này cho testing.
-  - [ ] Hoàn thiện schemas - crud logic - api của model Info (chứa đầy đủ thông tin cá nhân: Họ tên, liên hệ, ...).
+  - [x] Viết code cho model Info
+  - [x] Khởi tạo và chạy seed Data của đối tượng này cho testing.
+  - [x] Hoàn thiện schemas - crud logic - api của model Info (chứa đầy đủ thông tin cá nhân: Họ tên, liên hệ, ...).
 - **Frontend**:
-  - [ ] Thiết lập UI show json thông tin fetch về thông qua API response.
-  - [ ] Nâng cấp UI cho page About me.
+  - [x] Thiết lập UI show json thông tin fetch về thông qua API response.
+  - [x] Nâng cấp UI cho page About me.
 
 ### 3.3 Timelines (Tiểu sử bản thân):
 

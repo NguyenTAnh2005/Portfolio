@@ -2,7 +2,7 @@ pip list --not-required --format=freeze > requirements.txt
 
 # Backend Technologies & Libraries
 
-Dưới đây là danh sách các công cụ cốt lõi được sử dụng để xây dựng hệ thống quản lý hồ sơ năng lực:
+Dưới đây là danh sách các công cụ cốt lõi được sử dụng:
 
 The following core libraries power the backend of this IT student portfolio website:
 

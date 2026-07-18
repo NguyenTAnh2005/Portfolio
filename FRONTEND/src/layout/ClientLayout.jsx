@@ -3,15 +3,16 @@ import ThemeToggle from "../components/ThemeToggle";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
+import clsx from "clsx";
 
-const baseclass = 'bg-light-bg text-light-text dark:bg-dark-bg dark:text-dark-text  transition-all ease-linear duration-500';
+const baseclass = ' text-light-text bg-light-surface dark:bg-dark-surface dark:text-dark-text ';
+const baseTransition = ' transition-all ease-linear duration-500 ';
 
 function ClientLayout(){
-
     return (
-        <div className="relative">
+        <div className="relative flex flex-col">
             <Header/>
-            <div className={`bg-light-surface dark:bg-dark-surface py-4`}>
+            <div className={clsx(baseTransition, baseclass, "  py-4")}>
                 <Outlet/>
             </div>
             <Footer/>
@@ -37,7 +38,7 @@ const Header = () =>{
     ]
     return (
         <>
-            <div className={`${baseclass} sticky top-0 flex items-center justify-between px-4 md:px-8 lg:px-12 py-4 shadow-md z-50`}>
+            <div className = {clsx(baseTransition, "text-light-text bg-light-bg dark:bg-dark-bg dark:text-dark-text", "sticky top-0 flex items-center justify-between px-4 md:px-8 lg:px-12 py-4 shadow-md z-50" )}>
                 <div className="flex justify-center items-center gap-2">
                     <span className="text-xl btn-primary">
                         A
@@ -90,7 +91,7 @@ const Header = () =>{
                 {expand&&(
                     <motion.div 
                         initial={{opacity:0, y:0}} 
-                        animate={{opacity:0.8, y:0}}
+                        animate={{opacity:1, y:0}}
                         // Giúp menu trượt lên + mờ dần
                         exit={{opacity:0, y:-20}}
                         transition={{duration:0.5, ease:"easeInOut"}}
