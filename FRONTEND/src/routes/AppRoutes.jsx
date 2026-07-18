@@ -5,13 +5,16 @@ import Login from "../pages/Login";
 import ProtectedRoute from "./ProtectedRoutes";
 import { AuthProvider } from "../contexts/AuthContext";
 import {ToastContainer} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // BẮT BUỘC: Import CSS của thư viện Toastify
+
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS của thư viện Toastify
 
 const  AppRoutes= () =>{
     return(
         <AuthProvider>
             <BrowserRouter>
+
             <ToastContainer theme="colored" position="top-right" autoClose={2500}/>
+            
                 <Routes>
                     {/* ================================================== */}
                     {/* TRANG ĐỘC LẬP: Không Navbar, Không Sidebar         */}

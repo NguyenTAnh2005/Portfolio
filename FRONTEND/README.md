@@ -23,6 +23,7 @@ Thực hiện code frontend, còn rất nhiều thứ để học hỏi nhưng s
 - framer-motion: Thư viện làm Animation. Dùng để làm các hiệu ứng như: nội dung từ từ mờ dần hiện lên khi cuộn chuột, ảnh nảy lên khi hover...
 - antd (Ant Design): Thư viện UI Component.
 - react-toastify: Thư viện thông báo alert.
+- react-icons: Thư viện icon đa dạng hơn lucide ( Chủ yếu dùng để import logo Brand)
 
 # 💻 Lệnh cài đặt các thư viện trên
 
@@ -35,7 +36,7 @@ npx tailwindcss init -p
 
 # Lệnh cài tổng hợp các thư viện
 npm install react-router-dom axios
-npm install lucide-react framer-motion
+npm install lucide-react react-icons framer-motion
 npm install antd clsx
 npm install react-toastify
 ```
