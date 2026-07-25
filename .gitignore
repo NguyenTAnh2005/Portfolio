@@ -4,12 +4,14 @@
 .idea/
 *.log
 
+**/__pycache__/
+*.pyc
+
 # --- BACKEND (Python/FastAPI) ---
-BACKEND/__pycache__/
-BACKEND/*.pyc
 BACKEND/venv/
 BACKEND/.env
 BACKEND/.pytest_cache/
+
 
 # --- FRONTEND (ReactJS) ---
 # Thư mục nặng nhất quả đất - TUYỆT ĐỐI KHÔNG UP
@@ -28,3 +30,11 @@ FRONTEND/.env.production.local
 FRONTEND/npm-debug.log*
 FRONTEND/yarn-debug.log*
 FRONTEND/yarn-error.log*
+
+
+# claude bổ sung
+BACKEND/.mypy_cache/
+BACKEND/.coverage
+BACKEND/*.egg-info/
+# Nếu có notebook thử nghiệm
+*.ipynb_checkpoints
