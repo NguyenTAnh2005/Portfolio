@@ -3,6 +3,8 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     FRONTEND_URL: str
     DATABASE_URL: str
+    #...
+    BASE_API_URL:str
     # Mã key để thực thi JWT
     SECRET_KEY: str
     # Thời hạn tồn tại tối đa của một lần cấp JWT (3 ngày)
@@ -10,8 +12,12 @@ class Settings(BaseSettings):
     # Tài khoản Admin seed data
     ST_ADMIN_EMAIL:str
     ST_ADMIN_PASSWORD: str
-    #...
-    BASE_API_URL:str
+
+
+    # Cloudinary Service
+    CLOUDINARY_NAME: str
+    CLOUDINARY_API_KEY: str
+    CLOUDINARY_API_SECRET: str
 
     class Config:
         env_file = ".env"

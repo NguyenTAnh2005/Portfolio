@@ -39,3 +39,6 @@ uvicorn==0.40.0
 
 # ORM & query database
 sqlalchemy==2.0.35
+
+# Cloudinary -- Dịch vụ lưu trữ ảnh
+cloudinary==1.45.0

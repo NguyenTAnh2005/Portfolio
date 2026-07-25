@@ -27,9 +27,11 @@ def update_info_by_id(db: Session, target_info_id: int, update_data: InfoUpdate)
      - lệnh setattr(db_user, key, value) thay giá trị mới vào Object Info cũ một cách tự động.
     3. Lưu xuống DB
     """
+
     target_info = get_info_by_id(db=db, info_id=target_info_id)
 
     update_data_dict = update_data.model_dump(exclude_unset=True)
+    
     for key, value in update_data_dict.items():
         setattr(target_info, key, value)
 

@@ -8,7 +8,7 @@ from app.core.config import settings
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import router 
-from app.routers import auth, user, info
+from app.routers import auth, user, info, timeline
 
 app = FastAPI()
 
@@ -40,6 +40,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(user.router)
 app.include_router(info.router)
+app.include_router(timeline.router)
 
 
 # Endpoint giúp đóng gói Object được trả về là App Exception ( Từ 1 object --> JSON - ngôn ngữ giao tiếp chung giữa Front và Back)

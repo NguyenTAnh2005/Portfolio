@@ -4,14 +4,14 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
 
 ## Lưu ý:
 
-- Chỉ làm các API cho **client** trước, các API bên phía quản lý Admin sẽ làm ở chặng **4**!
+- Làm các API cho **client** lẫn các API bên phía quản lý Admin, test đầy đủ!
 - Seed data từng chặng dùng test thì được viết nhiều file, sau này khi viết tổng hợp thành một file duy nhất sẽ kết hợp với biến seed_data? lưu database để check và chạy seed data một lần là được.
 - UI trả về danh sách nên có hỗ trợ lọc và tìm kiếm giúp hiểu rõ học tập hơn.
 
 ### 3.1 Gọi API:
 
 - **Backend**:
-  - [ ] (Nếu có thể) Tìm hiểu cách liên kết với dịch vụ lưu trữ ảnh: Cloudinary, S3,... để hỗ trợ chức năng tải ảnh lên (timeline, project, achievement).
+  - [x] (Nếu có thể) Tìm hiểu cách liên kết với dịch vụ lưu trữ ảnh: Cloudinary, S3,... để hỗ trợ chức năng tải ảnh lên (timeline, project, achievement).
 - **Frontend**:
   - [x] Thiết lập axios Config để tự động đính access_token vào header để get data từ API.
 
@@ -30,9 +30,9 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
 ### 3.3 Timelines (Tiểu sử bản thân):
 
 - **Backend**:
-  - [ ] Viết code cho model Timeline
-  - [ ] Khởi tạo và chạy seed Data đối tượng này cho testing.
-  - [ ] Hoàn thiện schemas - crud logic - api của model Timelines (Tiểu sử - hành trình học tập của bản thân).
+  - [x] Viết code cho model Timeline
+  - [x] Khởi tạo và chạy seed Data đối tượng này cho testing.
+  - [x] Hoàn thiện schemas - crud logic - api của model Timelines (Tiểu sử - hành trình học tập của bản thân).
 - **Frontend**:
   - [ ] Thiết lập UI show json thông tin fetch về thông qua API response.
   - [ ] Nâng cấp UI cho page Timelines.
@@ -67,7 +67,14 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
   - [ ] Thiết lập UI show json thông tin fetch về thông qua API response.
   - [ ] Nâng cấp UI cho page Index.
 
-### 3.7 Tinh chỉnh Seed Data:
+### 3.7 Xử lý Backend các đối tượng Role, System Config:
+
+- **Role**:
+  - [ ] Thiết lập quản lý models - schemas, crud, router.
+- **System Config**:
+  - [ ] Thiết lập quản lý models - schemas, crud, router.
+
+### 3.8 Tinh chỉnh Seed Data:
 
 - **Backend**:
   - [ ] Gộp các seed data thành một file duy nhất để khi chạy seed data chỉ để gọi python **seed_data.py** là được.
