@@ -16,8 +16,7 @@ router = APIRouter(
     prefix=BASE_URL+"/info",
     tags=["Info"]
 )
-
-@router.get("/{info_id}", response_model= ResponseModel[InfoResponse])
+@router.get("/{info_id}", response_model=ResponseModel[InfoResponse])
 def read_info(info_id: int, db: Session = Depends(connect_db)):
     """
     - Gọi hàm get theo id của crud bên Info và nhận data dạng Info
