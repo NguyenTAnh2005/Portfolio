@@ -80,7 +80,7 @@ def get_all(
 
 @router.put("/{timeline_id}", response_model=ResponseModel[TimelineResponse])
 def update(
-    target_id: int,
+    timeline_id: int,
     title: Optional[str] = Form(None), 
     organization: Optional[str] = Form(None),
     desc: Optional[str] = Form(None), 
@@ -104,7 +104,7 @@ def update(
     if isinstance(img_file, str) or (img_file and not img_file.filename):
         img_file = None
     response = logic_update_timeline(
-        db=db, target_id=target_id,
+        db=db, target_id=timeline_id,
         title=title, organization=organization, 
         desc=desc, start_end=start_end, 
         sort_order= sort_order_int,
@@ -154,7 +154,7 @@ def update(
 
 @router.delete("/{timeline_id}", response_model=ResponseModel)
 def delete(
-    target_id: int,
+    timeline_id: int,
     db: Session = Depends(connect_db),
     current_admin: User = Depends(get_current_admin)
 ):
@@ -162,6 +162,6 @@ def delete(
     API xóa timeline. 
     - Gọi CRUD delete (xóa timeline --> call logic xóa ảnh) --> Logic (Xóa ảnh, trả message)
     """
-    return logic_delete_timeline(db=db, target_id=target_id)
+    return logic_delete_timeline(db=db, target_id=timeline_id)
 
 
