@@ -35,7 +35,7 @@ useEffect(() => {
       const response = await infoService.getInfo(1);
       if (isMounted) setData(response); // chỉ set khi còn "sống"
     } catch (err) {
-      if (isMounted) setError(err);
+      if (isMounted) setError(err.message);
     } finally {
       if (isMounted) setLoading(false);
     }

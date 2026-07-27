@@ -24,7 +24,9 @@ export default {
       colors: {
         // Cách gọi: className="bg-primary hover:bg-primary-hover text-white"
         primary: {
+          // cam-##ca3500 blue-#2563eb-hover-1D4ED8   xanh-ngọc-00d2d3-hover-01a3a4
           DEFAULT: '#2563eb',   // Màu gốc
+          // 
           hover: '#1D4ED8'      // Màu khi chuột di vào
         },
         // Cách gọi: className="bg-light-bg text-light-text" -> Giao diện Sáng

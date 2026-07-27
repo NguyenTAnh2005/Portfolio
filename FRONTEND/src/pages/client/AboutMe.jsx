@@ -119,13 +119,13 @@ const HeroSection = ({data})=>{
             transition={{ duration: 0.6 }}
         className="grid grid-cols-12 gap-8 py-8">
             <div className={clsx("col-span-12 px-8 flex flex-col gap-2 items-center ", "transition-all duration-500 ease-linear ", " lg:col-span-7")} >
-                    <span className={clsx("px-3 py-1 rounded-md border-2 text-lg w-fit", baseTransition , " duration-100 hover:scale-105",
-                        "bg-primary/10  border-primary/30  dark:bg-primary/5 dark:border-primary/40")}>
-                        {data.fullname}
-                    </span>
-                    <span className={clsx("text-5xl uppercase font-extrabold mt-8")}>
+                    <span className={clsx("text-8xl uppercase font-serif mt-8")}>
                         <span>about </span>
                         <span className="text text-primary">me</span>
+                    </span>
+                    <span className={clsx("px-3 py-1 rounded-md border-2 text-lg font-bold mb-8 w-fit", baseTransition , " duration-100 hover:scale-105",
+                        "bg-primary/10  border-primary/30  dark:bg-primary/5 dark:border-primary/40")}>
+                        {data.fullname}
                     </span>
                     <span className={clsx("text-center text-base italic mb-8 px-8 lg:px-0 ", "text-light-muted dark:text-dark-muted")}>
                         {data.intro}
@@ -144,8 +144,8 @@ const HeroSection = ({data})=>{
             <div className={clsx("col-span-12 flex justify-center items-center ", " lg:col-span-5 lg:col-start-8")} >
                 <img
                 className={clsx(baseTransition, " w-full aspect-[1/1] rounded-lg border-4 ", "max-w-80 dark:border-primary/80 border-primary/60", " lg:max-w-80 ")}
-                src={MyAvt}
-                // src="https://4kwallpapers.com/images/walls/thumbs_3t/26748.jpg" 
+                // src={MyAvt}
+                src="https://4kwallpapers.com/images/walls/thumbs_3t/26748.jpg" 
                 alt="about-me-avt"/>
             </div>
         </motion.div>
@@ -159,8 +159,8 @@ const BioSection = ({data}) =>{
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6 }}
-         className={clsx(baseTransition, " col-span-12 text-3xl py-16 px-8 "," ")}>
-            <p className="italic font-serif text-center max-w-lg mx-auto">
+         className={clsx(baseTransition, " col-span-12 text-4xl py-16 px-8 "," ")}>
+            <p className="italic font-serif text-center max-w-xl mx-auto">
                 "{data.bio}."
             </p>
         </motion.div>
