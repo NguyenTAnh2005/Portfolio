@@ -54,16 +54,16 @@ class TimeLine(Base):
     #id, title, organization, desc, start_end, sort_order, img_url, img_public_id
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    title: Mapped[str] = mapped_column(String(100), nullable=False)
+    title: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     organization: Mapped[str] = mapped_column(String(100), nullable=False)
     desc: Mapped[str] = mapped_column(Text, nullable = False)
     # Time start - end : Dùng chuỗi để gán cứng, ko phải xử lý chuỗi thời gian -> String. 
     start_end: Mapped[str] = mapped_column(String(50), nullable=False)
-    sort_order: Mapped[int] = mapped_column(Integer, nullable=False)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, unique=True)
     # Thông số cần thiết để lưu ảnh trực tiếp lên Cloudinary 
     # Các chuỗi link của ảnh cloudinary thường hay rất dài. 
-    img_url: Mapped[str] = mapped_column(String(1024), nullable=True)
-    img_public_id: Mapped[str] = mapped_column(String(255), nullable=True)
+    img_url: Mapped[str] = mapped_column(String(1024), nullable=True, unique=True)
+    img_public_id: Mapped[str] = mapped_column(String(255), nullable=True, unique=True)
 
 
 

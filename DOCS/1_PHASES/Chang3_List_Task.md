@@ -34,8 +34,8 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
   - [x] Khởi tạo và chạy seed Data đối tượng này cho testing.
   - [x] Hoàn thiện schemas - crud logic - api của model Timelines (Tiểu sử - hành trình học tập của bản thân).
 - **Frontend**:
-  - [ ] Thiết lập UI show json thông tin fetch về thông qua API response.
-  - [ ] Nâng cấp UI cho page Timelines.
+  - [x] Thiết lập UI show json thông tin fetch về thông qua API response.
+  - [x] Nâng cấp UI cho page Timelines.
 
 ### 3.4 Project (Các dự án đã làm) - Khó nhằn nhất:
 

@@ -1,8 +1,8 @@
-"""add timeline model
+"""Add Timeline model
 
-Revision ID: d51eff83d8cc
+Revision ID: 6820c93285c6
 Revises: 839f489e5bbb
-Create Date: 2026-07-24 13:29:05.424784
+Create Date: 2026-07-28 08:24:54.084681
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'd51eff83d8cc'
+revision: str = '6820c93285c6'
 down_revision: Union[str, Sequence[str], None] = '839f489e5bbb'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -30,7 +30,11 @@ def upgrade() -> None:
     sa.Column('sort_order', sa.Integer(), nullable=False),
     sa.Column('img_url', sa.String(length=1024), nullable=True),
     sa.Column('img_public_id', sa.String(length=255), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('img_public_id'),
+    sa.UniqueConstraint('img_url'),
+    sa.UniqueConstraint('sort_order'),
+    sa.UniqueConstraint('title')
     )
     # ### end Alembic commands ###
 

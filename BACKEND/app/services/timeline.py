@@ -1,7 +1,3 @@
-import cloudinary.uploader
-# Config cloud (name, api, seceret_api) tự động
-from app.core import cloudinary_config
-
 from app.core.exception import AppException
 from fastapi import status
 from typing import Optional
@@ -15,6 +11,8 @@ from sqlalchemy.orm import Session
 from app.schemas.timeline import TimelineCreate, TimelineUpdate
 from app.crud.timeline import create_timeline, update_timeline, get_timeline_by_id, delete_timeline
 from app.schemas.response import ResponseModel
+
+from app.models.models import TimeLine
 
 # Code cũ thì upload và tạo 1 folder con trong Timeline theo "title" 
 # nhưng nó sẽ gây răc rối rất rất nhiều cho logic update. Nên bỏ
@@ -59,16 +57,76 @@ def parse_field_text_to_pydantic_class(
 
     return pydantic_class
 
+# Hàm check lỗi trùng sort_order  --> Lỗi chnung chung, khó debug 
+
+# def check_conflict(db: Session, current_id:int, sort_order:int, title:str ):
+#     """
+#     Func kiểm tra trùng lặp dữ liệu khi tạo mới đối tượng timeline hoặc cập nhật!
+#     - Tạo 1 list chứa các điều kiện lặp: model.id == id,....
+#     - Nếu như list trống thì return 
+#     - Nếu ko có current_id tức là tạo mới thì chỉ cần lấy first và != None thì => trùng.
+#     - Nếu như cập nhật thì filter thêm - loại bỏ đối tượng có current_id. Sau đó lấy first, nếu != None tức là đã có sẵn trong DB. Không thể cập nhật thêm!
+#     """
+#     condition_conflict = []
+#     if sort_order and sort_order is not None:
+#         condition_conflict.append(TimeLine.sort_order == sort_order)
+#     if title and title is not None:
+#         condition_conflict.append(TimeLine.title == title)
+#     if not condition_conflict:
+#         return
+#     if not current_id:
+#         db_conflict = db.query(TimeLine).filter(*condition_conflict).first()
+#         if db_conflict:
+#             raise AppException( )
+#         return
+
+#     # thêm đi=k lọc bỏ id hiện tại
+#     condition_conflict.append(TimeLine.id!= current_id)
+#     db_conflict = db.query(TimeLine).filter(*condition_conflict).first()
+#     if db_conflict:
+#         raise AppException( )
+#     return
+
+def check_conflict(
+    db: Session, 
+    title: str,
+    sort_order: int, # Id loại trừ, nếu cập nhật thì phải loại TH id mình đang update. 
+    exclude_id: Optional[int] = None
+):
+    """
+    Func check trùng lặp dữ liệu. 
+    - Duyệt qua từng lớp lọc và trả về lỗi tương ứng với từng field trùng, giúp Admin debug tốt hơn. 
+    """
+    db_query = db.query(TimeLine)
+    if exclude_id: db_query.filter(TimeLine.id!=exclude_id)
+    if title and title is not None:
+        conflict = db_query.filter(TimeLine.title == title).first()
+        if conflict:
+            raise AppException(
+                status_code=status.HTTP_409_CONFLICT,
+                error_code="CONFLICT_DATA",
+                message="There is a timeline object that has this title value in the database. Please check and try again."
+            )
+    if sort_order and sort_order is not None:
+        conflict = db_query.filter(TimeLine.sort_order == sort_order).first()
+        if conflict:
+            raise AppException(
+                status_code=status.HTTP_409_CONFLICT,
+                error_code="CONFLICT_DATA",
+                message="There is a timeline object that has this sort_order value in the database. Please check and try again."
+            )
+
 # Xử lý tạo timeline
 def logic_create_timeline(
-        db: Session,
-        title: str, organization: str,
-        desc: str, start_end: str,
-        sort_order: int,
-        img_file: UploadFile
-    ):
+    db: Session,
+    title: str, organization: str,
+    desc: str, start_end: str,
+    sort_order: int,
+    img_file: UploadFile
+):
     """
     Hàm xử lý logic tạo Timeline:
+    - Check lỗi trùng lặp sort_order
     - Nhận vào db, các input field (text, file)
     - 1. Tải ảnh ImageFile lên Cloud, lấy giá trị secure_url và public_id về.
     - 2. Parse các giá trị đầy đủ qua class Pydantic CreteTimeline
@@ -76,6 +134,8 @@ def logic_create_timeline(
     --> Bên kia chỉ cần trả về object Timeline khi đã tạo thành công hoặc Raise App Exception (nếu cần) cho Router.
     """
     # Note tại sao .file vui lòng đọc file trong DOCS pharse-3
+    check_conflict(db = db, title=title, sort_order = sort_order, exclude_id = None)
+
     img_data = upload_image(
         file= img_file.file,
         folder_name=BASE_FOLDER
@@ -105,11 +165,14 @@ def logic_update_timeline(
     """
     Hàm xử lý logic cập nhật timeline
     - Nhận vào: db, target_id, các field form (text, file)
+    - Kiểm tra trùng lặp first. Cập nhật logic cũng to đấy, thế đã check trùng lặp chưa ?
     - 1. Parse từ các giá trị ở các Field Text qua thành dict để ánh xạ qua Pydantic class UpdateTimeline
     - 2. Khai báo None các biến liên quan ảnh. Nếu có ảnh thì upload ảnh, lấy thông số. 
     - 3. Gọi hàm crud Update để update
     - 4. Xóa ảnh cũ và trả về đối tượng timeline đã cập nhật cho Router
     """
+    check_conflict(db=db, title=title, sort_order=sort_order, exclude_id=target_id)
+
     # Pydantic này chỉ chứa các thông tin text thuần,
     # không chứa liên quan ảnh (url, public id) - cloudinary lo
     # Đọc func trên để hiểu rõ hơn
