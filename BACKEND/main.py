@@ -8,7 +8,7 @@ from app.core.config import settings
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import router 
-from app.routers import auth, user, info, timeline
+from app.routers import auth, user, info, timeline, project
 
 app = FastAPI()
 
@@ -41,6 +41,7 @@ app.include_router(auth.router)
 app.include_router(user.router)
 app.include_router(info.router)
 app.include_router(timeline.router)
+app.include_router(project.router)
 
 
 # Endpoint giúp đóng gói Object được trả về là App Exception ( Từ 1 object --> JSON - ngôn ngữ giao tiếp chung giữa Front và Back)
@@ -60,4 +61,4 @@ async def app_exeption_handler(request: Request, exc: AppException):
 
 @app.get("/")
 def read_root():
-    return{"message":"Welcome to Backend of Portfolio!"}
+    return{"message":f"👋  Welcome to Backend of Portfolio!"}

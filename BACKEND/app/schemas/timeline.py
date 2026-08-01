@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 # get by id
-class TimelineResponse(BaseModel):
+class Response(BaseModel):
     title: str 
     organization: str 
     desc: str 
@@ -16,15 +16,15 @@ class TimelineResponse(BaseModel):
         from_attributes = True
 
 # get all 
-class TimelinePaginationResponse(BaseModel):
+class PaginationResponse(BaseModel):
     total: int
     skip: int
     limit: int
-    list_data: list[TimelineResponse]
+    list_data: list[Response]
 
 # ko cần url, public id , phần này sẽ cấu bên dịch vụ của cloudinary lo 
 # create - 
-class TimelineCreate(BaseModel):
+class Create(BaseModel):
     title: str 
     organization: str 
     desc: str 
@@ -33,7 +33,7 @@ class TimelineCreate(BaseModel):
 
 
 # update - 
-class TimelineUpdate(BaseModel):
+class Update(BaseModel):
     title: Optional[str] = None
     organization: Optional[str] = None
     desc: Optional[str] = None

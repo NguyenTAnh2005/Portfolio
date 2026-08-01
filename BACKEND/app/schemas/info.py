@@ -5,7 +5,7 @@ class BaseContact(BaseModel):
     name: str
     url: str
 
-class InfoResponse(BaseModel):
+class Response(BaseModel):
     id: int
     fullname: str
     hometown: str
@@ -17,7 +17,7 @@ class InfoResponse(BaseModel):
     contact: list[BaseContact]
     bio: str
 
-class InfoUpdate(BaseModel):
+class Update(BaseModel):
     fullname: Optional[str] = None
     hometown: Optional[str] = None
     gender: Optional[bool] = True

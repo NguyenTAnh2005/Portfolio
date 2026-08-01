@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     CLOUDINARY_API_KEY: str
     CLOUDINARY_API_SECRET: str
 
+    # GITHUB Fetch reposity 
+    GITHUB_API_KEY: str
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

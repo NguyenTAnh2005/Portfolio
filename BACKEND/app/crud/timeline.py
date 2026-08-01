@@ -2,13 +2,16 @@ from fastapi import status
 from sqlalchemy.orm import Session
 from app.models.models import TimeLine
 from app.core.exception import AppException
-from app.schemas.timeline import TimelineCreate, TimelineResponse, TimelineUpdate, TimelinePaginationResponse
+from app.schemas import timeline as schemas_timeline
 from sqlalchemy import desc, asc
 from typing import Optional
 
 
 # Create
-def create_timeline(db: Session, data_create: TimelineCreate, img_url: str, img_public_id:str):
+def create(
+    db: Session, data_create: schemas_timeline.Create, 
+    img_url: str, img_public_id:str
+):
     """
     - Func nhận data: dict theo khung TimeLineCreate 
     - Tạo đối tượng Timeline tương ứng
@@ -26,7 +29,7 @@ def create_timeline(db: Session, data_create: TimelineCreate, img_url: str, img_
     return new_timeline
 
 # Get Timeline by id
-def get_timeline_by_id(db: Session, timeline_id: int):
+def get_by_id(db: Session, timeline_id: int):
     """
     - Func nhận vào là id: timeline cần tìm
     - Trả về kết quả: 
@@ -38,17 +41,17 @@ def get_timeline_by_id(db: Session, timeline_id: int):
         raise AppException(
             status_code=status.HTTP_404_NOT_FOUND,
             error_code="TIMELINE_NOT_FOUND",
-            message="The timeline does not exist in system. Please verify the ID and try again!"
+            message=f"❌ The timeline does not exist in system. Please verify the ID and try again."
         )
     return db_timeline
 
 # Get All 
-def get_all_timeline(
-        db: Session,
-        skip: int ,
-        limit: int,
-        sort_by: str,
-        order: str
+def get_all(
+    db: Session,
+    skip: int ,
+    limit: int,
+    sort_by: str,
+    order: str
 ):
     """
     - Func nhận các thông số lọc để trả về danh sách time line .
@@ -66,12 +69,12 @@ def get_all_timeline(
     total = query.count()
     list_data = query.offset(skip).limit(limit).all()
 
-    return TimelinePaginationResponse( total=total, skip=skip, limit=limit, list_data=list_data)
+    return schemas_timeline.PaginationResponse( total=total, skip=skip, limit=limit, list_data=list_data)
     
 # Update
-def update_timeline(
-    db: Session, target_id: int, 
-    update_data: TimelineUpdate,
+def update(
+    db: Session, db_timeline: TimeLine, 
+    update_data: schemas_timeline.Update,
     img_url: Optional[str] = None, 
     img_public_id: Optional[str] = None
 ):
@@ -81,13 +84,11 @@ def update_timeline(
     - Thực hiện cập nhật nếu có. 
     - Trả về đối tượng với schema - Timeline Response. 
     """
-    db_timeline = get_timeline_by_id(db=db, timeline_id=target_id)
-
     update_data_dict = update_data.model_dump(exclude_unset=True)
-    if img_url:
+
+    if img_url and img_public_id:
         update_data_dict["img_url"] = img_url
-    if img_public_id:
-        update_data_dict["img_public_id"] = img_public_id
+        update_data_dict["img_public_id"] = img_url
 
     for key, value in update_data_dict.items():
         setattr(db_timeline, key, value)
@@ -99,11 +100,12 @@ def update_timeline(
     return db_timeline
 
 # Delete
-def delete_timeline(
-    db: Session, target_id: int, db_timeline: TimeLine
+def delete(
+    db: Session, 
+    db_timeline: TimeLine
 ):
     """
-    Funct nhận vào là db, id timelime cần xóa và object db_timeline
+    Funct nhận vào là db, object db_timeline cần xóa
     - Xóa Timeline
     - Không return vì đây là 1 phần code bên logic delete
     """
@@ -111,4 +113,5 @@ def delete_timeline(
     # db_timeline = get_timeline_by_id(db=db, timeline_id=target_id)
     db.delete(db_timeline)
     db.commit()
+    return
 

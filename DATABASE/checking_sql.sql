@@ -1,6 +1,6 @@
 -- Xóa dữ liệu và reset luôn cả bộ đếm ID về 1
 TRUNCATE TABLE 
-    timeline  
+   project
 RESTART IDENTITY CASCADE;
 --TRUNCATE: Xóa sạch sành sanh dữ liệu nhưng giữ lại cấu trúc bảng.
 --RESTART IDENTITY: Đưa bộ đếm ID tự động tăng về lại số 1.
@@ -10,4 +10,4 @@ Select * from Users;
 select * from info;
 
 select * from timeline;
-select * from timeline where id = 1;
+select * from project;
