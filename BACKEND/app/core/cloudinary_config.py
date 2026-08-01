@@ -1,4 +1,6 @@
 import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 from app.core.config import settings
 from app.core.exception import AppException
 from fastapi import status
@@ -22,15 +24,37 @@ def upload_image(folder_name ,file):
             "public_id":  result["public_id"]
         }
     except Exception as e:
-        print(f"[Cloudinary upload error] {e}")
+        print(f"[Cloudinary upload error]: {e}")
         raise AppException(
             status_code = status.HTTP_502_BAD_GATEWAY,
             error_code="CLOUDINARY_UPLOAD_FAILED",
-            message="Uploading image failed. Please check and try again!"
+            message= f"❌ Uploading image failed. Please check and try again. [{e}]"
         )
 
 # Xóa ảnh trên cloudinary       
 def destroy_image(public_id):
     """ Xóa ảnh theo public_id -> Tránh các file ảnh rác -> tốn dung lượng bản free!"""
-    if public_id:
+    try:
         cloudinary.uploader.destroy(public_id)
+        return
+    except Exception as e:
+        print(f"[Cloudinary upload error]: {e}")
+        raise AppException(
+            status_code = status.HTTP_502_BAD_GATEWAY,
+            error_code="CLOUDINARY_UPLOAD_FAILED",
+            message= f"❌ Uploading image failed. Please check and try again. [{e}]"
+        )
+
+# Xóa folder
+def delete_folder(folder_name):
+    try:
+        cloudinary.api.delete_folder(folder_name)
+        return
+    except Exception as e:
+        print(f"[Cloudinary upload error]: {e}")
+        raise AppException(
+            status_code = status.HTTP_502_BAD_GATEWAY,
+            error_code="CLOUDINARY_UPLOAD_FAILED",
+            message= f"❌ Uploading image failed. Please check and try again. [{e}]"
+        )
+        

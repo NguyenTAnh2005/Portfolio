@@ -1,11 +1,12 @@
 from fastapi import status
 from sqlalchemy.orm import Session
+
 from app.models.models import Info
 from app.core.exception import AppException
-from app.schemas.info import InfoUpdate
+from app.schemas import info as schemas_info
 
 # Get Info by ID
-def get_info_by_id(db: Session, info_id: int) -> Info:
+def get_by_id(db: Session, info_id: int) -> Info:
     """Hàm này nhận vào id info và trả về thông tin đầy đủ của Info."""
     db_info = db.query(Info).filter(Info.id == info_id).first()
     if not db_info:
@@ -13,12 +14,12 @@ def get_info_by_id(db: Session, info_id: int) -> Info:
         raise AppException(
             status_code= status.HTTP_404_NOT_FOUND,
             error_code="INFO_NOT_FOUND",
-            message="Không tìm thấy thông tin Info trong hệ thống!"
+            message=f"❌ The timeline does not exist in system. Please verify the ID and try again."
         )
     return db_info
 
 # Update Info by ID
-def update_info_by_id(db: Session, target_info_id: int, update_data: InfoUpdate):
+def update(db: Session, target_info_id: int, update_data: schemas_info.Update):
     """
     Hàm này nhận vào id_info và update_data (Schema đã qua Pydantic).
     Chỉ làm đúng việc là gán đè data mới lên data cũ và lưu lại.
@@ -28,7 +29,7 @@ def update_info_by_id(db: Session, target_info_id: int, update_data: InfoUpdate)
     3. Lưu xuống DB
     """
 
-    target_info = get_info_by_id(db=db, info_id=target_info_id)
+    target_info = get_by_id(db=db, info_id=target_info_id)
 
     update_data_dict = update_data.model_dump(exclude_unset=True)
     

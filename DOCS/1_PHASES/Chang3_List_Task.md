@@ -40,10 +40,10 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
 ### 3.4 Project (Các dự án đã làm) - Khó nhằn nhất:
 
 - **Backend**:
-  - [ ] Khởi tạo dependencies fetch thông tin từ github Repo (languages, time, ...) - dùng khi tạo project hoặc update project.
-  - [ ] Viết code cho model Project
-  - [ ] Khởi tạo và chạy seed Data đối tượng này cho testing.
-  - [ ] Hoàn thiện schemas - crud logic - api của model Project (Các dự án bản thân đã làm).
+  - [x] Khởi tạo dependencies fetch thông tin từ github Repo (languages, time, ...) - dùng khi tạo project hoặc update project.
+  - [x] Viết code cho model Project
+  - [x] Khởi tạo và chạy seed Data đối tượng này cho testing.
+  - [x] Hoàn thiện schemas - crud logic - api của model Project (Các dự án bản thân đã làm).
 
 - **Frontend**:
   - [ ] Thiết lập UI show json thông tin fetch về thông qua API response.

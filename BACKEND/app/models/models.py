@@ -3,6 +3,7 @@ from sqlalchemy import Integer, Column, String, Boolean, ARRAY, ForeignKey, Date
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db_connection import Base
+from datetime import datetime
 
 # ================================
 #  1. Enum Role 
@@ -62,8 +63,32 @@ class TimeLine(Base):
     sort_order: Mapped[int] = mapped_column(Integer, nullable=False, unique=True)
     # Thông số cần thiết để lưu ảnh trực tiếp lên Cloudinary 
     # Các chuỗi link của ảnh cloudinary thường hay rất dài. 
-    img_url: Mapped[str] = mapped_column(String(1024), nullable=True, unique=True)
-    img_public_id: Mapped[str] = mapped_column(String(255), nullable=True, unique=True)
+    img_url: Mapped[str] = mapped_column(String(1024), nullable=True)
+    img_public_id: Mapped[str] = mapped_column(String(255), nullable=True)
+
+
+# ================================
+# 5. Bảng Project
+# ================================
+class Project(Base):
+    __tablename__ = "project"
+    # id, title, desc, project_url, list_tech, list_lang, created_at, last_updated, img_url, img_public_id
+    # fetch github API: desc, list_lang, created_at, last_updated
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    desc: Mapped[str] = mapped_column(Text, nullable=True)
+    project_url: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
+    list_tech: Mapped[list] = mapped_column(ARRAY(String(50)), nullable=True)
+    list_lang: Mapped[list] = mapped_column(ARRAY(String(50)), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    last_updated: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    # Thông số cần thiết để lưu ảnh trực tiếp lên Cloudinary 
+    # Các chuỗi link của ảnh cloudinary thường hay rất dài. 
+    img_url: Mapped[str] = mapped_column(String(1024), nullable=True)
+    img_public_id: Mapped[str] = mapped_column(String(255), nullable=True)
+
+    
+    
 
 
 
