@@ -14,8 +14,8 @@ from app.services import project as project_logic
 
 BASE_URL = settings.BASE_API_URL
 router = APIRouter(
-    prefix=BASE_URL+"/project",
-    tags=["Project"]
+    prefix=BASE_URL+"/projects",
+    tags=["Projects"]
 )
 
 @router.post("/", response_model=ResponseModel[schemas_project.Response])

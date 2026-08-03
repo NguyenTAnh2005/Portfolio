@@ -12,8 +12,8 @@ from app.schemas.response import ResponseModel
 BASE_URL= settings.BASE_API_URL
 
 router = APIRouter(
-    prefix=BASE_URL+"/user",
-    tags = ["User"]
+    prefix=BASE_URL+"/users",
+    tags = ["Users"]
 )
 
 @router.get("/{user_id}", response_model = ResponseModel[UserResponse])

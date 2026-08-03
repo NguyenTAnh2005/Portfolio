@@ -16,8 +16,8 @@ from app.services import timeline as timeline_logic
 BASE_URL = settings.BASE_API_URL
 
 router = APIRouter(
-    prefix=BASE_URL+"/timeline",
-    tags=["Timeline"]
+    prefix=BASE_URL+"/timelines",
+    tags=["Timelines"]
 )
 
 @router.post("/", response_model=ResponseModel[schemas_timeline.Response])
