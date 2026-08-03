@@ -47,7 +47,7 @@ const Header = () =>{
                             Portfolio
                     </span>
                 </div>
-                <div className=" hidden  lg:flex lg:justify-center">
+                <div className=" hidden gap-4 lg:flex lg:justify-center">
                     {NavItems.map(item =>(
                         <NavItem
                             location={location}
@@ -138,7 +138,7 @@ const NavItem = ({linkTo, content, location}) =>{
             }
         `}
         >
-            <span className='relative z-10'>
+            <span className='relative z-10 text-base lg:text-xl'>
                 {content}
             </span>
 

@@ -12,7 +12,7 @@ import { TbBrandCpp, TbBrandCSharp } from "react-icons/tb";
 import { FaGithub, FaFacebook, FaInstagram, FaPhone, FaEnvelope } from "react-icons/fa";
 
 
-import MyAvt from "../../assets/me.jpg";
+import FadeInSection from "../../components/FadeInSection";
 import { InfoBadge, TechBadge, ContactBadge } from "../../components/Badge";
 import { StatusLoading, StatusError, StatusNoData } from "../../components/FetchStatus";
 
@@ -80,14 +80,14 @@ export default function AboutMe(){
     )
 }
 
-export const LANGUAGE_CONFIG = {
+const LANGUAGE_CONFIG = {
   "Python": { name: "Python", icon: FaPython, website: "https://python.org", styleClass: " bg-[#3776AB] text-white"},
   "C#": { name: "C#", icon: TbBrandCSharp ,website: "https://microsoft.com", styleClass: " bg-[#239120] text-white"},
   "C++": { name: "C++", icon: TbBrandCpp,  website: "https://isocpp.org",styleClass: " bg-[#00599C] text-white" },
   "JavaScript": { name: "JavaScript", icon: FaJs, website: "https://mozilla.org", styleClass: " bg-[#F7DF1E] text-black "}
 };
 
-export const LIB_CONFIG = { 
+const LIB_CONFIG = { 
     "Bootstrap": { name: "Bootstrap",  icon: FaBootstrap, website: "https://getbootstrap.com", styleClass: "bg-[#7952B3] text-white font-semibold"},
     "React": {  name: "React", icon: FaReact, website: "https://react.dev",styleClass: "bg-[#61DAFB] text-[#20232A] font-bold" },
     "Tailwind": { name: "Tailwind", icon: RiTailwindCssFill, website: "https://tailwindcss.com",  styleClass: "bg-[#38BDF8] text-white font-semibold"},
@@ -95,7 +95,7 @@ export const LIB_CONFIG = {
     "FastAPI": { name: "FastAPI",  icon: SiFastapi, website: "https://tiangolo.com", styleClass: "bg-[#009688] text-white font-semibold"}
 };
 
-export const CONTACT_CONFIG = {
+const CONTACT_CONFIG = {
     phone:   { icon: FaPhone, content:"+84 328884320",     styleClass: "bg-green-500 text-white" },
     github:  { icon: FaGithub, content:"NguyenTAnh2005",   styleClass: "bg-[#181717] text-white" },
     email1:  { icon: FaEnvelope, content:"23050118@student.bdu.edu.vn", styleClass: "bg-red-500 text-white" },
@@ -153,17 +153,11 @@ const HeroSection = ({data})=>{
 }
 const BioSection = ({data}) =>{
     return(
-        <motion.div
-        // Tham Khảo copy paste
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6 }}
-         className={clsx(baseTransition, " col-span-12 text-4xl py-16 px-8 "," ")}>
+        <FadeInSection className={clsx(baseTransition, " col-span-12 text-4xl py-16 px-8 "," ")}>
             <p className="italic font-serif text-center max-w-xl mx-auto">
                 "{data.bio}."
             </p>
-        </motion.div>
+        </FadeInSection>
     )
 }
 
@@ -188,15 +182,10 @@ const renderTechBadges = (dataFetch, dataConfig) =>{
         </>
     );
 }
+
 const TechListSection = ({data, config_lang, config_lib})=>{
     return(
-        <motion.div
-        // Tham Khảo copy paste
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6 }}
-        className={clsx(baseTransition, " p-8 flex flex-col gap-24 lg:grid lg:grid-cols-12 ")}>
+        <FadeInSection className={clsx(baseTransition, " p-8 flex flex-col gap-24 lg:grid lg:grid-cols-12 ")}>
             <div className="flex flex-col gap-8 lg:grid lg:col-span-6 lg:justify-center lg:items-start lg:h-fit">
                 <p className="text-3xl uppercase text-center font-bold">
                     Programming Languages
@@ -213,19 +202,13 @@ const TechListSection = ({data, config_lang, config_lib})=>{
                     {renderTechBadges(data.framework, config_lib)}
                 </div>
             </div>
-        </motion.div>
+        </FadeInSection>
     )
 }
 
 const ContactSection = ({ data }) => {
     return(
-        <motion.div 
-        // Tham Khảo copy paste
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6 }}
-        className={clsx(baseTransition, " flex flex-col gap-8 py-16 lg:px-16")}>
+        <FadeInSection className={clsx(baseTransition, " flex flex-col gap-8 py-16 lg:px-16")}>
             <p className="text-4xl font-bold text-center uppercase ">
                 Contact me
             </p>
@@ -246,6 +229,6 @@ const ContactSection = ({ data }) => {
                     );
                 })}
             </div>
-        </motion.div>
+        </FadeInSection>
     )
 }
