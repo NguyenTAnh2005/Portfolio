@@ -13,8 +13,8 @@ from app.db_connection import connect_db
 BASE_URL = settings.BASE_API_URL
 
 router = APIRouter(
-    prefix=BASE_URL+"/info",
-    tags=["Info"]
+    prefix=BASE_URL+"/infos",
+    tags=["Infos"]
 )
 @router.get("/{info_id}", response_model=ResponseModel[schemas_info.Response])
 def get_info(info_id: int, db: Session = Depends(connect_db)):
