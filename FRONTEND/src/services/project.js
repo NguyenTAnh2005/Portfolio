@@ -1,7 +1,7 @@
 import axiosInstance from "./axiosConfig";
 import { buildFormData } from "../utils/axiosHelper";
 
-const ENDPOINT = "/project";
+const ENDPOINT = "/projects";
 
 export const projectService = {
     getProject: async (id)=>{
