@@ -1,6 +1,7 @@
 from fastapi import status
 from sqlalchemy.orm import Session
 from sqlalchemy import desc, asc
+from typing import Optional
 
 from app.core.exception import AppException
 from app.models.models import Project
@@ -31,15 +32,40 @@ def get_all(
     limit: int,
     sort_by: str ,
     order: str,
+    title: Optional[str] = None,
+    tech:  Optional[str] = None,
+    lang:  Optional[str] = None,
 ):
     """
     Func trả về danh sách project, các input:
+    - title: tìm gần đúng theo tên (case-insensitive)
+    - tech: lọc theo danh sách công nghệ, khớp bất kỳ (overlap) trên list_tech
+    - lang: lọc theo danh sách ngôn ngữ, khớp bất kỳ (overlap) trên list_lang
     - skip: Số bản ghi bỏ qua
     - Limit: Số bản ghi tối đa trong danh sách trả về. 
     - sort_by: Sắp xếp theo cột nào 
     - order: xếp theo tăng(asc) hay giảm dần(desc) 
     """
     query = db.query(Project)
+    # Nếu có title thì lọc theo title
+    if title: query = query.filter(Project.title.ilike(f"%{title}%"))
+
+    # Nếu có lang thì lọc theo lang - dự án có chứa giá trị này trong list_lang
+    # Dùng .op("@>") thay vì .contains() vì .contains() chỉ tồn tại trên kiểu 
+    # postgresql.ARRAY (sqlalchemy.dialects.postgresql), trong khi model đang 
+    # khai báo cột bằng ARRAY generic (sqlalchemy.ARRAY) -> gọi .contains() sẽ 
+    # bị AttributeError, giống trường hợp .overlap() trước đó.
+    # .op("@>") gọi thẳng toán tử "contains" gốc của Postgres, hoạt động với 
+    # mọi kiểu cột, không cần đổi model/migration. Input phải bọc thành mảng 
+    # 1 phần tử [lang] vì @> so sánh mảng với mảng, không so sánh mảng với 
+    # 1 giá trị đơn lẻ.
+    if lang: 
+        query = query.filter(Project.list_lang.op("@>")([lang]))
+
+    # Tương tự - lọc theo tech, dự án phải chứa giá trị này trong list_tech
+    if tech: 
+        query = query.filter(Project.list_tech.op("@>")([tech]))
+
     # Kiếm sortby dựa theo chuỗi bằng getattr (get attribute) - none thì lấy mặc định là id.
     sort_col = getattr(Project, sort_by, Project.id)
 
