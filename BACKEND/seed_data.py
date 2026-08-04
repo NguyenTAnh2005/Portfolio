@@ -10,8 +10,8 @@ async def seed_data():
     db = SessionLocal()
     print("📢 Start seed data ..........")
     try:
-        # seed_timeline(db=db)
-        await seed_project(db=db)
+        seed_timeline(db=db)
+        # await seed_project(db=db)
         db.commit()
         print(f"✅ Added and commited seed data was successfully.")
     except Exception as e:
