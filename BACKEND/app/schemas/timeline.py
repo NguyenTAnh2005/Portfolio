@@ -3,6 +3,7 @@ from typing import Optional
 
 # get by id
 class Response(BaseModel):
+    id: int
     title: str 
     organization: str 
     desc: str 

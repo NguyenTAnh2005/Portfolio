@@ -4,7 +4,8 @@ from datetime import datetime
 
 class Response(BaseModel):
     # img thì cloud lo riêng
-    # list_lang, created_at, last_updated, desc thì project_url lấy đc 
+    # list_lang, created_at, last_updated, desc thì project_url lấy đc
+    id: int
     title: str
     list_tech: Optional[list[str]] = None
     project_url: str
