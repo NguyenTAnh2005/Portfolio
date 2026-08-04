@@ -66,8 +66,11 @@ def list_projects(
     db: Session = Depends(connect_db),
     skip: int = Query(0, ge=0, description="Số bản ghi muốn bỏ qua: "),
     limit: int = Query(30, ge=1, le=30, description="Số bản ghi tối đa trên 1 trang: "),
+    title: str = Query(None, description=" Tìm theo tên dự án: " ),
+    tech: str = Query(None, description="Lọc dự án theo tên thư viện hay framework (React, Tailwind,...): "),
+    lang: str = Query(None, description="Lọc dự án theo tên ngôn ngữ lập trình (JavaScript, HTML,..): "),
     sort_by: Literal["id", "created_at", "last_updated"] = Query("id", description="Sắp xếp theo cột nào khi truy vấn (Default: ID) : "),
-    order: Literal["desc", "asc"] = Query("asc", description="Sắp xếp theo chiều nào tăng dần - ASC, giảm dần - DESC (Default: DESC) : ")
+    order: Literal["desc", "asc"] = Query("desc", description="Sắp xếp theo chiều nào tăng dần - ASC, giảm dần - DESC (Default: DESC) : ")
 ):
     """
     ## API trả về danh sách các project dựa theo các đầu vào.
@@ -76,7 +79,8 @@ def list_projects(
     """
     list_project = project_crud.get_all(
         db=db, skip= skip, limit= limit,
-        sort_by=sort_by, order= order
+        sort_by=sort_by, order= order,
+        title=title, tech=tech, lang=lang
     )
 
     return ResponseModel(
