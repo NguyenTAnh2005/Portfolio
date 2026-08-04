@@ -1,6 +1,6 @@
 import axiosInstance from "./axiosConfig";
 
-const ENDPOINT = "/info";
+const ENDPOINT = "/infos";
 
 export const infoService = {
     getInfo: async (id) =>{

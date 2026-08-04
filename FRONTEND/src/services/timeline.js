@@ -1,7 +1,7 @@
 import axiosInstance from './axiosConfig';
 import { buildFormData } from '../utils/axiosHelper';
 
-const END_POINT = '/timeline';
+const END_POINT = '/timelines';
 // tạo service gồm các func: 
 export const TimelineService = {
 
