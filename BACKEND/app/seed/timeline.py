@@ -9,8 +9,8 @@ def seed_timeline(db: Session):
             "desc": "I studied here from age 6. I started 1st grade later than my classmate. I didn't learn English until 4th grade. I got the 'good student' award all 5 years!",
             "start_end": "2011 - 2016",
             "sort_order": 1,
-            "img_url": "https://res.cloudinary.com/df5mtvzkn/image/upload/v1784871406/Portfolio/TimeLines/cam-quang-primary-school-logo_vvsfl4.jpg",
-            "img_public_id": "Portfolio/TimeLines/cam-quang-primary-school-logo_vvsfl4",
+            "img_url": "https://res.cloudinary.com/df5mtvzkn/image/upload/v1785805458/Portfolio/TimeLines/cam-quang-primary-school_y081lv.jpg",
+            "img_public_id": "Portfolio/TimeLines/cam-quang-primary-school_y081lv",
         },
         {
             "title": "Secondary school student",
@@ -18,8 +18,8 @@ def seed_timeline(db: Session):
             "desc": "I studied here from age 11. Not much happened during this time. My English got worse starting in 8th grade. In 9th grade I learned a bit of Pascal, but I didn't take it seriously, and I still knew nothing about computers.",
             "start_end": "2016 - 2020",
             "sort_order": 2,
-            "img_url": "https://res.cloudinary.com/df5mtvzkn/image/upload/v1784871406/Portfolio/TimeLines/nguyen-huu-thai-secondary-school-logo_zrnqyp.jpg",
-            "img_public_id": "Portfolio/TimeLines/nguyen-huu-thai-secondary-school-logo_zrnqyp",
+            "img_url": "https://res.cloudinary.com/df5mtvzkn/image/upload/v1785805459/Portfolio/TimeLines/nguyen-huu-thai-secondary-school_hqdw4f.jpg",
+            "img_public_id": "Portfolio/TimeLines/nguyen-huu-thai-secondary-school_hqdw4f",
         },
         {
             "title": "High school student",
@@ -27,8 +27,8 @@ def seed_timeline(db: Session):
             "desc": "I studied here from age 15. I spent most of my time studying, but my grades were just average. In 11th grade I learned Pascal, but only with pen and paper — I didn't have a laptop to practice on. I got a total score of 24.3 on the National High School Graduation Exam to apply for an IT major.",
             "start_end": "2020 - 2023",
             "sort_order": 3,
-            "img_url": "https://res.cloudinary.com/df5mtvzkn/image/upload/v1784871406/Portfolio/TimeLines/cam-binh-high-school-logo_s6y2hl.png",
-            "img_public_id": "Portfolio/TimeLines/cam-binh-high-school-logo_s6y2hl",
+            "img_url": "https://res.cloudinary.com/df5mtvzkn/image/upload/v1785805458/Portfolio/TimeLines/cam-binh-high-school_zpq2cx.jpg",
+            "img_public_id": "Portfolio/TimeLines/cam-binh-high-school_zpq2cx",
         },
         {
             "title": "The first Part-time job",
@@ -36,8 +36,8 @@ def seed_timeline(db: Session):
             "desc": "I had a part-time job at GS25, a convenience store chain from South Korea. I learned a lot there, and it made me value money more. But I only worked there for 6 months during my second year of university, because I had a lot of school projects around that time. The projects weren't hard, but since I had just started learning, I still struggled and couldn't manage the minimum hours per week that the job required.",
             "start_end": "12/2024 - 06/2025",
             "sort_order": 4,
-            "img_url": "https://res.cloudinary.com/df5mtvzkn/image/upload/v1784871405/Portfolio/TimeLines/gs25-logo_fymimi.jpg",
-            "img_public_id": "Portfolio/TimeLines/gs25-logo_fymimi",
+            "img_url": "https://res.cloudinary.com/df5mtvzkn/image/upload/v1785805458/Portfolio/TimeLines/gs25_syxdoy.jpg",
+            "img_public_id": "Portfolio/TimeLines/gs25_syxdoy",
         },
         {
             "title": "University student",
@@ -45,8 +45,8 @@ def seed_timeline(db: Session):
             "desc": "I've studied here since age 18, in the IT program. Studying here was very different from before. In 1/2025 I learned HTML and CSS. In 4/2025 I learned basic JS. In 8/2025 I started using Bootstrap CSS. In 9/2025 I started learning React through React.dev, plus TailwindCSS. Right now I'm focusing on Software Engineering.",
             "start_end": "9/2023 - Now",
             "sort_order": 5,
-            "img_url": "https://res.cloudinary.com/df5mtvzkn/image/upload/v1784871406/Portfolio/TimeLines/binh-duong-university-logo_fzlsbc.jpg",
-            "img_public_id": "Portfolio/TimeLines/binh-duong-university-logo_fzlsbc",
+            "img_url": "https://res.cloudinary.com/df5mtvzkn/image/upload/v1785805459/Portfolio/TimeLines/binh-duong-university_vmt2fm.jpg",
+            "img_public_id": "Portfolio/TimeLines/binh-duong-university_vmt2fm",
         }
     ]
 
