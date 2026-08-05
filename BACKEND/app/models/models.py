@@ -87,6 +87,22 @@ class Project(Base):
     img_url: Mapped[str] = mapped_column(String(1024), nullable=True)
     img_public_id: Mapped[str] = mapped_column(String(255), nullable=True)
 
+# ================================
+# 6. Bảng Achievement
+# ================================
+class Achievement(Base):
+    __tablename__="achievement"
+    # id, title, desc, achieved_at ,img_url, img_public_id
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    desc: Mapped[str] = mapped_column(Text, nullable=False)
+    achieved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    # Thông số cần thiết để lưu ảnh trực tiếp lên Cloudinary 
+    # Các chuỗi link của ảnh cloudinary thường hay rất dài. 
+    img_url: Mapped[str] = mapped_column(String(1024), nullable=True)
+    img_public_id: Mapped[str] = mapped_column(String(255), nullable=True)
+
+
     
     
 

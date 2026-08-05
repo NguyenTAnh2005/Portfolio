@@ -46,15 +46,15 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
   - [x] Hoàn thiện schemas - crud logic - api của model Project (Các dự án bản thân đã làm).
 
 - **Frontend**:
-  - [ ] Thiết lập UI show json thông tin fetch về thông qua API response.
-  - [ ] Nâng cấp UI cho page Project.
+  - [x] Thiết lập UI show json thông tin fetch về thông qua API response.
+  - [x] Nâng cấp UI cho page Project.
 
   ### 3.5 Achievements (Thành tích đạt được):
 
 - **Backend**:
-  - [ ] Viết code cho model Achievement
-  - [ ] Khởi tạo và chạy seed Data đối tượng này cho testing.
-  - [ ] Hoàn thiện schemas - crud logic - api của model Achievement (Các thành tích).
+  - [x] Viết code cho model Achievement
+  - [x] Khởi tạo và chạy seed Data đối tượng này cho testing.
+  - [x] Hoàn thiện schemas - crud logic - api của model Achievement (Các thành tích).
 - **Frontend**:
   - [ ] Thiết lập UI show json thông tin fetch về thông qua API response.
   - [ ] Nâng cấp UI cho page Achievements.
@@ -67,10 +67,8 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
   - [ ] Thiết lập UI show json thông tin fetch về thông qua API response.
   - [ ] Nâng cấp UI cho page Index.
 
-### 3.7 Xử lý Backend các đối tượng Role, System Config:
+### 3.7 Xử lý Backend các đối tượng System Config:
 
-- **Role**:
-  - [ ] Thiết lập quản lý models - schemas, crud, router.
 - **System Config**:
   - [ ] Thiết lập quản lý models - schemas, crud, router.
 
