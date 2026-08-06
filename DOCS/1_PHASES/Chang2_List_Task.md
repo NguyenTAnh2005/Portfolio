@@ -5,7 +5,7 @@ _Mục tiêu: Hoàn thiện luồng đăng nhập, bảo mật JWT, điều hư�
 ### Backend - Database:
 
 - Error Handling, CORS:
-  - [x] Khởi tạo class xử lý lỗi tập trung. => [[Lưu ý phần này tại đây.]](./Note_ErrorHandling.md)
+  - [x] Khởi tạo class xử lý lỗi tập trung. => [[Lưu ý phần này tại đây.]](../2_LEARNING/BACKEND/note-error-handling.md)
   - [x] Khởi tạo CORS (Cross-Origin Resource Sharing) làm việc với pydantic setting
 - Security files:
   - [x] Xây dựng hàm mã hóa mật khẩu

@@ -25,6 +25,19 @@ def get_by_id(db:Session, project_id: int):
         )
     return db_project
 
+# _build_query (Đọc comment trong file timeline để rõ hơn )
+def _build_query(
+    db: Session, sort_by: str, order: str 
+):
+    query = db.query(Project)
+    # Kiếm sortby dựa theo chuỗi bằng getattr (get attribute) - none thì lấy mặc định là id.
+    sort_column = getattr(Project, sort_by, Project.id)
+    # query = query.order_by(desc(sort_column)) if order == "desc" else query = query.order_by(asc(sort_column))
+    if order == "desc": query = query.order_by(desc(sort_column))
+    else: query = query.order_by(asc(sort_column))
+
+    return query
+
 # get all
 def get_all(
     db: Session,
@@ -46,7 +59,7 @@ def get_all(
     - sort_by: Sắp xếp theo cột nào 
     - order: xếp theo tăng(asc) hay giảm dần(desc) 
     """
-    query = db.query(Project)
+    query = _build_query(db=db, sort_by=sort_by, order=order)
     # Nếu có title thì lọc theo title
     if title: query = query.filter(Project.title.ilike(f"%{title}%"))
 
@@ -66,17 +79,24 @@ def get_all(
     if tech: 
         query = query.filter(Project.list_tech.op("@>")([tech]))
 
-    # Kiếm sortby dựa theo chuỗi bằng getattr (get attribute) - none thì lấy mặc định là id.
-    sort_col = getattr(Project, sort_by, Project.id)
-
-    if order == "desc": query = query.order_by(desc(sort_col))
-    elif order == "asc": query = query.order_by(asc(sort_col))
-
     # count tổng số hiện có trong hệ thống
     total_count = query.count()
     list_data = query.offset(skip).limit(limit).all()
 
     return schemas_project.PaginationResponse( total = total_count, skip = skip, limit = limit, list_data = list_data )
+
+# get list 
+def get_list(
+    db: Session,
+    skip: int,
+    limit: int,
+    sort_by: str ,
+    order: str
+):
+    query = _build_query(db=db, sort_by=sort_by, order=order)
+    list_data = query.offset(skip).limit(limit).all()
+
+    return list_data
 
 # create
 def create(db: Session, create_data: schemas_project.Create, img_url: str, img_public_id:str):

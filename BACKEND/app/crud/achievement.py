@@ -23,6 +23,19 @@ def get_by_id(db: Session, achieve_id: int):
         )
     return db_achieve
 
+# _build_query (Đọc comment trong file timeline để rõ hơn )
+def _build_query(
+    db: Session, sort_by: str, order: str 
+):
+    query = db.query(Achievement)
+    # Kiếm sortby dựa theo chuỗi bằng getattr (get attribute) - none thì lấy mặc định là id.
+    sort_column = getattr(Achievement, sort_by, Achievement.id)
+    # query = query.order_by(desc(sort_column)) if order == "desc" else query = query.order_by(asc(sort_column))
+    if order == "desc": query = query.order_by(desc(sort_column))
+    else: query = query.order_by(asc(sort_column))
+
+    return query
+
 def get_all(
   db: Session,
   skip: int, 
@@ -33,12 +46,7 @@ def get_all(
     """
     Func nhận các thông số lọc để trả về danh sách Achievements .
     """
-    query = db.query(Achievement)
-    sort_col = getattr(Achievement, sort_by, Achievement.id)
-    if order == "asc":
-        query = query.order_by(asc(sort_col))
-    else:
-        query = query.order_by(desc(sort_col))
+    query = _build_query(db=db, sort_by=sort_by, order=order)
 
     total = query.count()
     list_achieves = query.offset(skip).limit(limit).all()
@@ -46,6 +54,17 @@ def get_all(
         total=total, skip = skip, limit=limit,
         list_data=list_achieves
     )
+
+def get_list(
+  db: Session,
+  skip: int, 
+  limit: int,
+  sort_by:str,
+  order: str
+):
+    query = _build_query(db=db, sort_by=sort_by, order=order)
+    list_achieves = query.offset(skip).limit(limit).all()
+    return list_achieves
 
 def create(
     db: Session, create_data: schemas_achieve.Create,
