@@ -15,15 +15,15 @@ const baseTransition = ' transition-all ease-linear duration-500';
 
 const GithubStats = [
     { 
-        "src":"https://github-readme-stats.shion.dev/api?username=NguyenTAnh2005&hide_border=false&include_all_commits=false&count_private=false",
+        "src":"https://github-readme-stats.shion.dev/api?username=NguyenTAnh2005&theme=light&hide_border=false&include_all_commits=false&count_private=false",
         "alt":"github-stat-commit-count"
     },
     { 
-        "src":"https://streak-stats.demolab.com/?user=NguyenTAnh2005&hide_border=false",
+        "src":"https://streak-stats.demolab.com/?user=NguyenTAnh2005&theme=light&hide_border=false",
         "alt":"github-streak-stats"
     },
     { 
-        "src":"https://github-readme-stats.shion.dev/api/top-langs/?username=NguyenTAnh2005&hide_border=false&include_all_commits=false&count_private=false&layout=compact",
+        "src":"https://github-readme-stats.shion.dev/api/top-langs/?username=NguyenTAnh2005&theme=light&hide_border=false&include_all_commits=false&count_private=false&layout=compact",
         "alt":"github-stat-top-lang"
     }
 ]
@@ -110,11 +110,17 @@ export default function Project(){
 
 const TitleSection = () =>{
     return(
-        <FadeInSection className='p-4 '>
+        <FadeInSection>
             <div className='text-4xl gap-2 lg:text-8xl flex uppercase justify-center font-serif text-center lg:gap-8'>
-                <span>My</span>
-                <span className='text-primary'> Projects</span>
+                <span>my</span>
+                <span className='text-primary'> achievements</span>
             </div>
+            <p className={clsx(
+                "text-light-muted dark:text-dark-muted mt-4",
+                ' text-base text-center font-serif lg:text-3xl mx-auto indent-6 max-w-5xl '
+            )}>
+                Through hands-on project work, I keep learning and growing in both Backend and Frontend.
+            </p>
         </FadeInSection>
     )
 }

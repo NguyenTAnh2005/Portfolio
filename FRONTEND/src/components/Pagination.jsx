@@ -26,7 +26,7 @@ export const Pagination = ({current_page, count_page, onChangeIndexPage}) =>{
 }
 
 const PageIndex = ({current_page, page_num, onChangeIndexPage}) =>{
-    console.log(current_page);
+    // console.log(current_page);
     return(
         <span
             className={clsx(

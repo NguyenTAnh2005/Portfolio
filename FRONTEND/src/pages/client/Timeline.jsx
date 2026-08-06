@@ -123,8 +123,8 @@ const AbstractSection = () =>{
                 </div>
             </div>
             <div className='flex justify-center gap-8 mt-8'>
-                {listTag.map(item=>(
-                        <div className="tech-tag text-base lg:text-2xl ">
+                {listTag.map((item, index)=>(
+                        <div className="tech-tag text-base lg:text-2xl " key={`major-tag-${index}`}>
                             {item.content}
                         </div>
                     ))
