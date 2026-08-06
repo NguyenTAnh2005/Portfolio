@@ -17,6 +17,9 @@ class Response(BaseModel):
     contact: list[BaseContact]
     bio: str
 
+    class Config:
+        from_attributes = True
+
 class Update(BaseModel):
     fullname: Optional[str] = None
     hometown: Optional[str] = None

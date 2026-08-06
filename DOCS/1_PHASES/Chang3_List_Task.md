@@ -11,7 +11,7 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
 ### 3.1 Gọi API:
 
 - **Backend**:
-  - [x] (Nếu có thể) Tìm hiểu cách liên kết với dịch vụ lưu trữ ảnh: Cloudinary, S3,... để hỗ trợ chức năng tải ảnh lên (timeline, project, achievement).
+  - [x] Tìm hiểu cách liên kết với dịch vụ lưu trữ ảnh: Cloudinary để hỗ trợ chức năng tải ảnh lên (timeline, project, achievement).
 - **Frontend**:
   - [x] Thiết lập axios Config để tự động đính access_token vào header để get data từ API.
 
@@ -56,13 +56,13 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
   - [x] Khởi tạo và chạy seed Data đối tượng này cho testing.
   - [x] Hoàn thiện schemas - crud logic - api của model Achievement (Các thành tích).
 - **Frontend**:
-  - [ ] Thiết lập UI show json thông tin fetch về thông qua API response.
-  - [ ] Nâng cấp UI cho page Achievements.
+  - [x] Thiết lập UI show json thông tin fetch về thông qua API response.
+  - [x] Nâng cấp UI cho page Achievements.
 
 ### 3.6 Index Page (Khó do bao quát nhiều thông tin của các models nên modules này được thực hiện ở sau cùng):
 
 - **Backend**:
-  - [ ] Viết một API gọi tất cả các thông tin cần thiết thay vì bắt Frontend phải chạy promise tổng nhiều API cùng một lúc.
+  - [x] Viết một API gọi tất cả các thông tin cần thiết thay vì bắt Frontend phải chạy promise tổng nhiều API cùng một lúc.
 - **Frontend**:
   - [ ] Thiết lập UI show json thông tin fetch về thông qua API response.
   - [ ] Nâng cấp UI cho page Index.

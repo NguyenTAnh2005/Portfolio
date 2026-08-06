@@ -45,6 +45,26 @@ def get_by_id(db: Session, timeline_id: int):
         )
     return db_timeline
 
+
+# Hàm get_all dùng cho trả về list data cần phân trang 
+# Hàm get_list dùng cho trả về danh sách cho trang index
+# Lý do tách: Bên Index không cần trả về total ( bên query cần chạy count để lấy)
+# Do đó sẽ có 2 dạng hàm tuy nhiên cả 2 logic giống nhau quá nhiều, vậy nên sẽ tách ra 
+# 1 private func trả về query có sort col + order trước
+# các public func kế thừa sẽ bổ sung thêm các thông số như skip, limit sau và trả về thích hợp
+
+def _build_query(
+    db: Session, sort_by: str, order: str 
+):
+    query = db.query(TimeLine)
+    # Kiếm sortby dựa theo chuỗi bằng getattr (get attribute) - none thì lấy mặc định là id.
+    sort_column = getattr(TimeLine, sort_by, TimeLine.id)
+    # query = query.order_by(desc(sort_column)) if order == "desc" else query = query.order_by(asc(sort_column))
+    if order == "desc": query = query.order_by(desc(sort_column))
+    else: query = query.order_by(asc(sort_column))
+
+    return query
+
 # Get All 
 def get_all(
     db: Session,
@@ -57,20 +77,31 @@ def get_all(
     - Func nhận các thông số lọc để trả về danh sách time line .
     - Lưu ý: schema trả về.
     """
-    query = db.query(TimeLine)
-    # Kiếm sortby dựa theo chuỗi bằng getattr (get attribute) - none thì lấy mặc định là id.
-    sort_column = getattr(TimeLine, sort_by, TimeLine.id)
-    # query = query.order_by(desc(sort_column)) if order == "desc" else query = query.order_by(asc(sort_column))
-    if order == "desc":
-        query = query.order_by(desc(sort_column))
-    else:
-        query = query.order_by(asc(sort_column))
+    query = _build_query(db=db, sort_by=sort_by, order=order)
 
     total = query.count()
     list_data = query.offset(skip).limit(limit).all()
 
     return schemas_timeline.PaginationResponse( total=total, skip=skip, limit=limit, list_data=list_data)
-    
+
+# Get List 
+def get_list(
+    db: Session,
+    skip: int ,
+    limit: int,
+    sort_by: str,
+    order: str
+):
+    """
+    - Func nhận các thông số lọc để trả về danh sách time line .
+    - Lưu ý: schema trả về.
+    """
+    query = _build_query(db=db, sort_by=sort_by, order=order)
+
+    list_data = query.offset(skip).limit(limit).all()
+
+    return list_data
+
 # Update
 def update(
     db: Session, db_timeline: TimeLine, 
