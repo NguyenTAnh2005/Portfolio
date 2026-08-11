@@ -64,8 +64,8 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
 - **Backend**:
   - [x] Viết một API gọi tất cả các thông tin cần thiết thay vì bắt Frontend phải chạy promise tổng nhiều API cùng một lúc.
 - **Frontend**:
-  - [ ] Thiết lập UI show json thông tin fetch về thông qua API response.
-  - [ ] Nâng cấp UI cho page Index.
+  - [x] Thiết lập UI show json thông tin fetch về thông qua API response.
+  - [x] Nâng cấp UI cho page Index.
 
 ### 3.7 Xử lý Backend các đối tượng System Config:
 
@@ -77,4 +77,4 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
 - **Backend**:
   - [ ] Gộp các seed data thành một file duy nhất để khi chạy seed data chỉ để gọi python **seed_data.py** là được.
 - **Frontend**:
-  - [ ] Testing lại các page.
+  - [ ] Testing, nâng cấp lại các page để cải thiện UI.
