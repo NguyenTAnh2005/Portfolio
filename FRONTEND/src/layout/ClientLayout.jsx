@@ -4,18 +4,20 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import clsx from "clsx";
+import {useSystemConfig} from "../contexts/SystemConfigContext";
 
 const baseclass = ' text-light-text bg-light-surface dark:bg-dark-surface dark:text-dark-text ';
 const baseTransition = ' transition-all ease-linear duration-500 ';
 
 function ClientLayout(){
+    const {resumeURL} = useSystemConfig();
     return (
         <div className="relative flex flex-col">
             <Header/>
             <div className={clsx(baseTransition, baseclass, "  py-4")}>
                 <Outlet/>
             </div>
-            <Footer/>
+            <Footer resumeURL={resumeURL}/>
         </div>
     )
 }
@@ -157,10 +159,9 @@ const NavItem = ({linkTo, content, location}) =>{
     )
 }
 
-function Footer(){
+function Footer({resumeURL}){
     return(
-        <div id="FOOTER" className={`bg-dark-bg text-light-muted  text-sm
-                                     py-12`}>
+        <div id="FOOTER" className={`bg-dark-bg text-light-muted  text-sm py-12`}>
             {/* Nửa trên chứa các cục thông tin */}
             <div className={`flex flex-col gap-12 px-6 lg:flex-row lg:justify-between lg:px-12`}>
                 {/* Cột 1: Thương hiệu */}
@@ -206,7 +207,12 @@ function Footer(){
                     © 2026 Nguyen Tuan Anh. All rights reserved.
                 </p>
             </div>
-
+            {/* Nút link đến Cv PDF */}
+            <div className="flex justify-end mt-6 px-8">
+                <a href={resumeURL} className="w-fit btn-primary cursor-pointer">
+                    View My Cv
+                </a>
+            </div>
         </div>
 
     )
@@ -235,6 +241,5 @@ function QuickLinkItem({content, link = ""}){
         </>
     )
 }
-
 
 export default ClientLayout;

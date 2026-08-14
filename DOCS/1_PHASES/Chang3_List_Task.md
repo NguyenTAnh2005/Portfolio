@@ -67,14 +67,22 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
   - [x] Thiết lập UI show json thông tin fetch về thông qua API response.
   - [x] Nâng cấp UI cho page Index.
 
-### 3.7 Xử lý Backend các đối tượng System Config:
+### 3.7 Xử lý đối tượng System Config:
 
 - **System Config**:
-  - [ ] Thiết lập quản lý models - schemas, crud, router.
+  ( Lưu trữ các biến như: đang tìm việc? Web đang bảo trì?,... )
+  - [x] Thiết lập quản lý models - schemas, crud, router.
+  - **Frontend**:
+  - [x] Thiết lập Axios gọi API.
+  - [x] Xây dựng hệ thống Provider Context - chặn client truy cập khi trang web đang bảo trì.
+  - [x] Thiết lập UI hiển thị cơ bản bên Client.
 
 ### 3.8 Tinh chỉnh Seed Data:
 
 - **Backend**:
-  - [ ] Gộp các seed data thành một file duy nhất để khi chạy seed data chỉ để gọi python **seed_data.py** là được.
+  - [ ] Gộp chạy seed data tích hợp trong alembic version file.
+
+### 3.9 Tinh chỉnh UI:
+
 - **Frontend**:
   - [ ] Testing, nâng cấp lại các page để cải thiện UI.

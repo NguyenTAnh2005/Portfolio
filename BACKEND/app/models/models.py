@@ -102,9 +102,16 @@ class Achievement(Base):
     img_url: Mapped[str] = mapped_column(String(1024), nullable=True)
     img_public_id: Mapped[str] = mapped_column(String(255), nullable=True)
 
-
-    
-    
+# ================================
+# 7. Bảng System Config
+# ================================
+class SystemConfig(Base):
+    __tablename__= "system_config"
+    # id, name, value
+    # * Kiểm tra xem chạy seed data chưa mỗi khi chạy sever?  
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
+    value: Mapped[dict] = mapped_column(JSONB, nullable=False)
 
 
 

@@ -46,7 +46,6 @@ const AdminNavBar = () =>{
         }
         fetchInfo();
         console.log(currentInfo);
-
     },[]);
 
     const confirmLogout = () =>{

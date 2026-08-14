@@ -3,7 +3,9 @@ import ClientRoutes from "./ClientRoutes";
 import AdminRoutes from "./AdminRoutes";
 import Login from "../pages/Login";
 import ProtectedRoute from "./ProtectedRoutes";
+import ProtectedConfig from "./ProtectedConfig";
 import { AuthProvider } from "../contexts/AuthContext";
+import { SystemConfigProvider } from "../contexts/SystemConfigContext";
 import {ToastContainer} from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css'; // Import CSS của thư viện Toastify
@@ -24,8 +26,13 @@ const  AppRoutes= () =>{
                     {/* ================================================== */}
                     {/* TRANG CHO CLIENT (HEADER, FOOTER, CÁC NỘI DUNG....)*/}
                     {/* ================================================== */}
-                    <Route path="/*" element={<ClientRoutes/>}/>
-
+                    <Route element={
+                        <SystemConfigProvider>
+                            <ProtectedConfig/>
+                        </SystemConfigProvider>
+                    }>
+                        <Route path="/*" element={<ClientRoutes/>}/>
+                    </Route>
                     {/* ================================================== */}
                     {/* TRANG CHO ADMIN QUẢN LÝ                            */}
                     {/* ================================================== */}
