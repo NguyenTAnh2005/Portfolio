@@ -16,7 +16,7 @@ def seed_info(db: Session):
         contact=[
             # {"name": "youtube", "url": "http://www.youtube.com/@ntta-05"},
             # {"name": "zalo", "url": "https://zalo.me/0328884320"},
-            {"name": "phone", "url": "+84 328884320"},
+            {"name": "phone", "url": "0328884320"},
             {"name": "github", "url": "https://github.com/NguyenTAnh2005"},
             {"name": "email1", "url": "23050118@student.bdu.edu.vn"},
             {"name": "email2", "url": "anhnguyentaun@gmail.com"},

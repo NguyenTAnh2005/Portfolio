@@ -80,7 +80,7 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
 ### 3.8 Tinh chỉnh Seed Data:
 
 - **Backend**:
-  - [ ] Gộp chạy seed data tích hợp trong alembic version file.
+  - [x] Gộp chạy seed data tích hợp trong alembic version file.
 
 ### 3.9 Tinh chỉnh UI:
 
