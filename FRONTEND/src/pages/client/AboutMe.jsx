@@ -16,6 +16,8 @@ import FadeInSection from "../../components/FadeInSection";
 import { InfoBadge, TechBadge, ContactBadge } from "../../components/Badge";
 import { StatusLoading, StatusError, StatusNoData } from "../../components/FetchStatus";
 
+import { useSystemConfig } from "../../contexts/SystemConfigContext";
+
 const baseclass = ' text-light-text bg-light-surface dark:bg-dark-surface dark:text-dark-text ';
 const baseTransition = ' transition-all ease-linear duration-500';
 
@@ -25,6 +27,7 @@ export default function AboutMe(){
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const {isAvailable} = useSystemConfig();
 
     useEffect(()=>{
         // Nếu thắc mắc về cột ismouted thì tham khảo trong docs unMouted nhé!
@@ -61,7 +64,7 @@ export default function AboutMe(){
         content= (
             <div className="flex flex-col">
                 {/* Hero */}
-                <HeroSection data={data}/>
+                <HeroSection data={data} isAvailable={isAvailable}/>
                 {/* Bio*/}
                 <BioSection data={data}/>
                 {/* téch, libs */}
@@ -104,7 +107,7 @@ const CONTACT_CONFIG = {
     instagram:{ icon: FaInstagram, content:"tanh_2005_",styleClass: "bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white" },
 };
 
-const HeroSection = ({data})=>{
+const HeroSection = ({data, isAvailable})=>{
     const badge_list = [
         {keyName: "gender", icon:"👤", content: data.gender ? "Male":"Female" },
         {keyName: "major", icon:"💼", content: data.major },
@@ -119,15 +122,18 @@ const HeroSection = ({data})=>{
             transition={{ duration: 0.6 }}
         className="grid grid-cols-12 gap-8 py-8">
             <div className={clsx("col-span-12 px-8 flex flex-col gap-2 items-center ", "transition-all duration-500 ease-linear ", " lg:col-span-7")} >
-                    <span className={clsx("text-8xl uppercase font-serif mt-8")}>
+                    <span className={clsx("text-8xl uppercase text-center font-serif mt-8")}>
                         <span>about </span>
                         <span className="text text-primary">me</span>
                     </span>
-                    <span className={clsx("px-3 py-1 rounded-md border-2 text-lg font-bold mb-8 w-fit", baseTransition , " duration-100 hover:scale-105",
+                    <span className="tech-tag text-base mb-4">
+                        {isAvailable? "🎯 Available for work" :"❌ Not available for work"}  
+                    </span>
+                    <span className={clsx("px-3 py-1 rounded-md border-2 text-lg font-bold w-fit", baseTransition , " duration-100 hover:scale-105",
                         "bg-primary/10  border-primary/30  dark:bg-primary/5 dark:border-primary/40")}>
                         {data.fullname}
                     </span>
-                    <span className={clsx("text-center text-base italic mb-8 px-8 lg:px-0 ", "text-light-muted dark:text-dark-muted")}>
+                    <span className={clsx("text-center text-base italic mt-8 mb-8 px-8 lg:px-0 ", "text-light-muted dark:text-dark-muted")}>
                         {data.intro}
                     </span>
                     <div className="flex flex-wrap gap-4">

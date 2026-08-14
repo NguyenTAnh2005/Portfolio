@@ -12,7 +12,7 @@ export const AuthProvider = ({children})=>{
         localStorage.setItem('jwt-token', newToken);
     };
 
-    const logout = () =>{
+    const logout = () =>{ 
         setToken(null);
         localStorage.removeItem('jwt-token');
     };
