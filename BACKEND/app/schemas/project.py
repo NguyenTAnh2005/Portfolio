@@ -11,8 +11,8 @@ class Response(BaseModel):
     project_url: str
     desc: Optional[str] = None
     list_lang: Optional[list[str]] = None
-    created_at: datetime
-    last_updated: datetime
+    created_at: Optional[datetime]
+    last_updated: Optional[datetime]
     img_url: str
     img_public_id: str
 

@@ -80,8 +80,8 @@ class Project(Base):
     project_url: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
     list_tech: Mapped[list] = mapped_column(ARRAY(String(50)), nullable=True)
     list_lang: Mapped[list] = mapped_column(ARRAY(String(50)), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    last_updated: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_updated: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
     # Thông số cần thiết để lưu ảnh trực tiếp lên Cloudinary 
     # Các chuỗi link của ảnh cloudinary thường hay rất dài. 
     img_url: Mapped[str] = mapped_column(String(1024), nullable=True)
