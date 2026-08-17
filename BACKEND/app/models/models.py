@@ -40,8 +40,9 @@ class Info(Base):
     # CÁc dự án sau nên dùng enum định nghĩa giới tính riêng hẳn hoi nhé!
     gender: Mapped[bool] = mapped_column(Boolean, default=True)
     major: Mapped[str] = mapped_column(String(30))
-    language: Mapped[list] = mapped_column(ARRAY(String(50)))
-    framework: Mapped[list] = mapped_column(ARRAY(String(50)))
+
+    techstack: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    # {"language": [], "framework": [], "database": [], "tools": []}
     intro: Mapped[str] = mapped_column(Text)
     # [ { "type": "facebook", "url": "https://facebook.com/...", "visible": true}, {..}]
     contact: Mapped[dict] = mapped_column(JSONB, default=list)

@@ -1,10 +1,11 @@
 """seed data
 
-Revision ID: d5a1c4c307c1
-Revises: 0e761ad3da53
-Create Date: 2026-08-14 15:11:06.141837
+Revision ID: 7d98509cee74
+Revises: 0df31e647681
+Create Date: 2026-08-17 10:59:37.988144
 
 """
+
 from typing import Sequence, Union
 
 from alembic import op
@@ -15,15 +16,13 @@ from datetime import datetime, timezone, timedelta
 from app.core.config import settings
 from app.core.security import get_password_hash
 
-
-
 # revision identifiers, used by Alembic.
-revision: str = 'd5a1c4c307c1'
-down_revision: Union[str, Sequence[str], None] = '0e761ad3da53'
+revision: str = '7d98509cee74'
+down_revision: Union[str, Sequence[str], None] = '0df31e647681'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-
+# Seed data 
 def _seed_user():
     user_table = sa.table(
         'users',
@@ -48,8 +47,7 @@ def _seed_info():
         sa.column('hometown', sa.String),
         sa.column('gender', sa.Boolean),
         sa.column('major', sa.String),
-        sa.column('language', sa.ARRAY(sa.String)),
-        sa.column('framework', sa.ARRAY(sa.String)),
+        sa.column('techstack', postgresql.JSONB(astext_type=sa.Text())),
         sa.column('intro', sa.Text),
         sa.column('contact', postgresql.JSONB(astext_type=sa.Text())),
         sa.column('bio', sa.String),
@@ -63,8 +61,13 @@ def _seed_info():
 
             "gender":True, # Male
             "major":"Software Engineering",
-            "language":["Python", "C#", "C++", "JavaScript"],
-            "framework":["Bootstrap", "React", "Tailwind", ".NET", "FastAPI"],
+            # "techstack":{"language": [], "framework": [], "database": [], "tools": []}
+            "techstack":{
+                "language":["Python", "C#", "C++", "JavaScript"],
+                "framework":["Bootstrap", "React", "Tailwind", ".NET", "FastAPI"],
+                "database":["PostgreSQL"],
+                "tools":["Git", "Github"],
+            },
             "intro":intro,
             "contact":[
                 {"name": "phone", "url": "0328884320"},
