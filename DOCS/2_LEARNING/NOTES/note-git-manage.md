@@ -126,6 +126,9 @@ git commit -m "feat(project): thêm search/filter/pagination cho project list"
 **Dùng khi:** Đang code dở ở nhánh A, sếp/bug khẩn cấp bắt bạn chuyển sang nhánh B ngay, nhưng chưa muốn commit code dở ở A.
 
 ```bash
+# Nếu có dạng tạo mới file thì nên git add . cho xử lý ổn nhất
+git add .
+# chỉ thay đổi file thì chỉ cần git stash
 git stash                     # cất code đang dở (cả staged lẫn chưa staged)
 git stash push -m "wip: đang làm useListQuery hook"   # cất kèm mô tả, dễ nhớ
 

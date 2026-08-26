@@ -1,79 +1,79 @@
 import clsx from "clsx";
 import { FaGithub } from "react-icons/fa";
 
-const baseTransition = ' transition-all ease-linear duration-500';
-
+import 
+{ 
+    baseBorder, mutedText,baseText,
+    animateFast, animateSlow,
+    cardTitle, body, metaLabel
+  
+} from "../utils/style";
+import { Badge } from "./ui/Badge";
+import { ItemCard } from "./wrapper/ItemCard";
 const TechTag = ({content}) =>{
     return(
-        <span 
-            className={clsx( baseTransition,
-                " text-xs lg:text-sm flex justify-center items-center border p-1  rounded-md ",
-                " border-primary/30 dark:border-primary/40",
-                " text-primary bg-primary/10 dark:bg-primary/15"
+        <Badge>
+            <div className={clsx(metaLabel, animateSlow, " px-2 py-1" )}>
+                {content}
+            </div>
+        </Badge>
+
+    )
+}
+
+const ViewProject = ({url})=>{
+    return(
+        <a className={clsx( animateSlow, baseBorder, baseText, 
+            " p-2 flex gap-2 items-center justify-center rounded-md border ",
+            " hover:dark:bg-light-bg hover:bg-dark-bg",
+            " hover:dark:text-light-text hover:text-dark-text"
             )}
+            href={url} target="_blank"
         >
-            {content}
-        </span>
+            <FaGithub size={20}/>
+            <span 
+            className="text-xs lg:text-sm font-semibold">
+                View in Github
+            </span>
+
+        </a>
     )
 }
 
 export const ProjectItem = ({project}) =>{
     return(
-        <div className={clsx( 
-            " col-span-12 md:col-span-6 lg:col-span-4 flex flex-col h-full",
-            " transition-all ease-linear duration-200",
-            "  rounded-xl border-2 shadow-lg",
-            " bg-light-bg dark:bg-dark-bg",
-            " border-primary/30 dark:border-primary/40",
-            " hover:shadow-primary"
+        <ItemCard  styleClass={clsx(
+            " flex flex-col h-full rounded-md group overflow-hidden",
+            " border-2 ",
         )}>
-            <img 
-                className={clsx(
-                    "rounded-t-xl ",
+            <img className={clsx( animateFast, baseBorder, 
+                " border-b-2 group-hover:scale-110 aspect-video object-contain w-full",
                 )}
-                src={project.img_url} alt={`project-${project.title}`} 
+                src={project.img_url} alt={`project-${project.title}`} loading="lazy"
             />
-            <div className="flex flex-col flex-1 p-4 gap-2">
-                <span className="text-xl font-bold text-center">
+            <div className={clsx(animateSlow, "flex flex-col flex-1 p-4 gap-2")}>
+                <span className={clsx(cardTitle, "text-center")}>
                     {project.title}
                 </span>
-                <p className=" text-sm lg:text-base text-light-muted dark:text-dark-muted indent-8 ">
+                <p className={clsx( mutedText, body)}>
                     {project.desc}
                 </p>
-                <div className="flex flex-1 flex-wrap gap-2 mt-2">
+                <div className="flex flex-wrap gap-2 mt-2">
                     {project.list_tech.map(tech=>(
                             <TechTag key={tech} content={tech} />
                         ))
                     }
-                </div>
-                <div className="flex flex-wrap gap-2 mt-2">
-                    {project.list_lang.map(tech=>(
+                    {project.list_lang.map((tech)=>(
                             <TechTag key={tech} content={tech} />
                         ))
                     }
                 </div>
-                <div className="flex-1">
-
+                <div className="flex-1"/>
+                <div>
+                    <ViewProject url={project.project_url}/>
                 </div>
-                <a 
-                    className={clsx( baseTransition,
-                        " w-fit p-2 flex gap-2 items-center justify-center rounded-md mx-auto border ",
-                        "border-primary/30 dark:border-primary/40",
-                        " text-light-text dark:text-dark-text ",
-                        " hover:dark:bg-light-bg hover:bg-dark-bg",
-                        " hover:dark:text-light-text hover:text-dark-text"
-                    )}
-                    href={project.project_url} target="_blank"
-                >
-                    <FaGithub size={24}/>
-                    <span 
-                    className="text-sm font-semibold">
-                        View Project in Github
-                    </span>
-
-                </a>
             </div>
-            
-        </div>
+        </ItemCard>
     )
 }
+

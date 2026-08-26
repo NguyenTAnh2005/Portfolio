@@ -85,4 +85,8 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
 ### 3.9 Tinh chỉnh UI:
 
 - **Frontend**:
-  - [ ] Testing, nâng cấp lại các page để cải thiện UI.
+  - [x] Testing, nâng cấp lại các page để cải thiện UI. Có thể đụng tới Backend.
+
+### 3.10 Nâng cấp bảo mật
+
+- [] Tìm hiểu thêm về việc lưu trữ jwt token và sử dụng chúng.

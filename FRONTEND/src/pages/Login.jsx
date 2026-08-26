@@ -1,10 +1,14 @@
 import { Mail, UserLock } from 'lucide-react';
-import { Input } from '../components/Input';
+import { Input } from '../components/ui/Input';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { authService } from '../services/auth';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { animateSlow, baseBackground, baseBorder, baseText, bgSurface } from '../utils/style';
+import clsx from 'clsx';
+import {Button} from "../components/wrapper/Button";
+import ThemeToggle from "../components/ui/ThemeToggle";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -38,11 +42,14 @@ export default function Login() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-dark-bg p-4">
+        <div className={clsx(baseBackground, baseText, animateSlow, "relative min-h-screen flex items-center justify-center p-4")}>
             {/* Thêm w-full để card không bị bóp nghẹt trên mobile */}
-            <form onSubmit={handleLogin} className="card w-full max-w-md p-8 text-center bg-light-surface dark:bg-dark-surface">
+            <form onSubmit={handleLogin} 
+                className={clsx(
+                    bgSurface, baseBorder, animateSlow, "border-2 w-full max-w-md p-8 text-center rounded-xl"
+            )}>
                 
-                <p className='text-2xl text-center font-bold mb-6 text-light-text dark:text-dark-text'>
+                <p className='text-2xl text-center font-bold mb-6'>
                     Login to manage your website!<br/>
                     <span className="text-primary text-xl font-semibold mt-1 block"> 🗿 My Boss! 🗿</span>
                 </p>
@@ -68,14 +75,19 @@ export default function Login() {
                     />
                 </div>
 
-                <button 
-                    type="submit" 
-                    disabled={loading} // SỬA LỖI 4: Khóa hẳn nút bấm
-                    className={`w-full btn-primary ${loading ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-md'}`}
-                >
-                    {loading ? "Authenticating..." : "Log In"}
-                </button>
+                <Button style={clsx("px-4 py-2 rounded-md")}>
+                    <button 
+                        type="submit" 
+                        disabled={loading} // SỬA LỖI 4: Khóa hẳn nút bấm
+                        className={clsx("w-full btn-primary", loading && "opacity-60 cursor-not-allowed")}
+                    >
+                        {loading ? "Authenticating..." : "Log In"}
+                    </button>
+                </Button>
             </form>
+            <div className='absolute top-2 left-2'>
+                <ThemeToggle/>
+            </div>
         </div>
     );
 }

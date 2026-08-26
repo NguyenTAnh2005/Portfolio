@@ -5,7 +5,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { systemConfigService } from "../services/systemConfig";
-import { StatusLoading, StatusError, StatusNoData } from "../components/FetchStatus";
+import { StatusLoading, StatusError, StatusNoData } from "../components/ui/FetchStatus";
 
 const SystemConfigContext = createContext();
 

@@ -1,5 +1,8 @@
 /* Tải phông chữ Inter từ Google Fonts về web */
-@import url(https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap);
+/* @import url(https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap); */
+/* @import url(https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap); */
+@import url(https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap);
 
 /* Gọi 3 tầng cốt lõi của Tailwind vào:
    1. base: Gói reset CSS, xóa bỏ các định dạng xấu xí mặc định của trình duyệt.
@@ -15,9 +18,9 @@
     body {
         /* Lệnh @apply giúp lấy các class lẻ tẻ của Tailwind gộp chung vào thẻ body.
            - bg-light-bg text-light-text: Mặc định vừa vào web là màu Sáng.
-           - transition-colors duration-300: Khi bật/tắt Đèn, màu nền sẽ chuyển từ từ trong 0.3 giây cực mượt, không bị giật khục.
+           - transition-colors duration-300: Khi bật/tắt Đèn, màu nền sẽ chuyển từ từ trong 0.5 giây cực mượt, không bị giật khục.
            - antialiased: Làm mịn nét chữ trên màn hình độ phân giải cao. */
-        @apply bg-light-bg text-light-text transition-colors duration-300 antialiased;
+        @apply bg-light-bg text-light-text transition-colors duration-slow antialiased;
     }
 
     /* Khi thẻ <html> có class "dark" (do nút ThemeToggle bật), tự động đổi màu nền và chữ của body sang bộ Màu Tối */
@@ -31,36 +34,10 @@
     h1, h2, h3, h4, h5, h6 {
         @apply font-bold tracking-tight;
     }
-}
-
-/* ================= QUY TẮC COMPONENT DÙNG CHUNG ================ */
-/* Tại sao phải dùng @layer components? 
-   Để tránh việc phải gõ đi gõ lại 10 cái class Tailwind mỗi lần tạo 1 cái Card hay Nút bấm.
-   Ta gộp 10 class đó thành 1 class tổng, đi đâu chỉ cần gọi className="card" là xong! */
-@layer components {
-    .card {
-        /* Tự động đổi nền sáng/tối, bo góc tròn (rounded-xl), đổ bóng nhẹ (shadow-sm) và có viền */
-        @apply bg-light-surface dark:bg-dark-surface p-4 rounded-xl shadow-sm 
-        border border-gray-200 dark:border-gray-700 transition-all duration-300;
-    }
-
-    .btn-primary {
-        /* Nút bấm có màu nền primary, hover thì đổi màu nhạt hơn, 
-           active:scale-95 giúp khi click chuột vào nút sẽ có hiệu ứng nút bị LÚN XUỐNG 5% rất chân thực */
-        @apply px-5 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover active:scale-95 transition-all duration-300;
-    }
-
-    .tech-tag {
-        /* Nhóm thẻ tag hiển thị công nghệ (ví dụ: React, FastAPI). Dùng nền màu primary trong suốt 20% (bg-primary/20) */
-        @apply inline-block px-3 py-1 bg-primary/20 text-primary dark:bg-primary/10 font-semibold text-xs rounded-md;
-    }
     
-    .desc {
-        /* indent-4: Tự động lùi đầu dòng cho đoạn văn mô tả */
-        @apply font-light text-sm indent-4;
+    /* Thiết kế dạng nội dung khi xuống dòng nhìn ổn hơn mặc định */
+    p {
+        @apply leading-relaxed; 
     }
-    
-    .title {
-        @apply text-2xl font-semibold;
-    }
+
 }

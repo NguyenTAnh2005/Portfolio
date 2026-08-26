@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import clsx from "clsx";
-import ThemeToggle from "../components/ThemeToggle";
+import ThemeToggle from "../components/ui/ThemeToggle";
 import { Menu, MoveLeft, LayoutDashboard, Info, AlarmClock, Folder, Trophy, UserKey, MonitorCog, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 import { authService } from "../services/auth";
