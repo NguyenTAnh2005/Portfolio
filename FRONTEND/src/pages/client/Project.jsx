@@ -1,32 +1,20 @@
 import { useState, useEffect } from "react";
 import clsx from "clsx";
-// import { motion } from "framer-motion";
 
 import { projectService } from "../../services/project";
-import { StatusError, StatusLoading, StatusNoData } from "../../components/FetchStatus";
+import { StatusError, StatusLoading, StatusNoData } from "../../components/ui/FetchStatus";
+import { Pagination } from "../../components/ui/Pagination";
 import { ProjectItem } from "../../components/ProjectItem";
 import { GithubStat } from "../../components/GithubStat";
-import { Pagination } from "../../components/Pagination";
-import FadeInSection from "../../components/FadeInSection";
+import FadeInSection from "../../components/wrapper/FadeInSection";
+import { PageTitleSection } from "../../components/ui/PageTitleSection";
 
+import { GithubStats } from "../../constants/projectConfig";
+import 
+{ 
+    baseTextBg, animateSlow, sectionTitle
+} from "../../utils/style";
 
-const baseclass = ' text-light-text bg-light-surface dark:bg-dark-surface dark:text-dark-text ';
-const baseTransition = ' transition-all ease-linear duration-500';
-
-const GithubStats = [
-    { 
-        "src":"https://github-readme-stats.shion.dev/api?username=NguyenTAnh2005&theme=light&hide_border=false&include_all_commits=false&count_private=false",
-        "alt":"github-stat-commit-count"
-    },
-    { 
-        "src":"https://streak-stats.demolab.com/?user=NguyenTAnh2005&theme=light&hide_border=false",
-        "alt":"github-streak-stats"
-    },
-    { 
-        "src":"https://github-readme-stats.shion.dev/api/top-langs/?username=NguyenTAnh2005&theme=light&hide_border=false&include_all_commits=false&count_private=false&layout=compact",
-        "alt":"github-stat-top-lang"
-    }
-]
 
 export default function Project(){
     const [loadingFirst, setLoadingFirst] = useState(true);
@@ -39,7 +27,6 @@ export default function Project(){
         order: "desc"
     });
     
-
     useEffect(()=>{
         // Cờ báo components còn sống
         let isMounted = true;
@@ -77,6 +64,7 @@ export default function Project(){
         setQueryParam(prev =>({
             ...prev, skip:new_skip
         }));
+        window.scroll(0, 0);
     }
 
     let content;
@@ -84,61 +72,52 @@ export default function Project(){
     else if(error!=null){content = <StatusError message={error}/>} 
     else if(!data){content=<StatusNoData/>}
     else content = (
-        <div>
+        <div className="flex flex-col gap-16">
             {/* Title Section */}
-            <TitleSection/>
-            {/* List Project Section */}
-            <ListProjectSection data={data}/>
-            {/* Pagination */}
-            <Pagination
-                count_page={count_page}  
-                current_page={current_page} 
-                onChangeIndexPage={handlePageIndexChange}
+            <PageTitleSection
+                title={"My Projects"}
+                desc={"Through hands-on project work, I keep learning and growing in both Backend and Frontend."}
             />
+
+            <div className="flex flex-col gap-8">
+                {/* List Project Section */}
+                <ListProjectSection data={data}/>
+                {/* Pagination */}
+                <Pagination
+                    count_page={count_page}  
+                    current_page={current_page} 
+                    onChangeIndexPage={handlePageIndexChange}
+                />
+            </div>
+            
             {/* Stat Section */}
             <StatSection list_stats ={GithubStats} />
         </div>
     )
     return (
-        <div className={clsx( 'card ', baseTransition, baseclass)}>
+        <div className={clsx( baseTextBg, animateSlow)}>
             {content}
         </div>
     )
-
-
 }
-
-const TitleSection = () =>{
-    return(
-        <FadeInSection>
-            <div className='text-4xl gap-2 lg:text-8xl flex uppercase justify-center font-serif text-center lg:gap-8'>
-                <span>my</span>
-                <span className='text-primary'> achievements</span>
-            </div>
-            <p className={clsx(
-                "text-light-muted dark:text-dark-muted mt-4",
-                ' text-base text-center font-serif lg:text-3xl mx-auto indent-6 max-w-5xl '
-            )}>
-                Through hands-on project work, I keep learning and growing in both Backend and Frontend.
-            </p>
-        </FadeInSection>
-    )
-}
-
 const ListProjectSection = ({data}) =>{
     return(
-        <FadeInSection className="py-8 lg:py-16 px-8 lg:px-16">
+        <FadeInSection>
             <div className={clsx(
-                " grid grid-cols-12 gap-6 md:gap-8"
+                " grid grid-cols-12 "
             )}>
-                {
-                    data.list_data.map((project, index)=>(
-                        <ProjectItem 
-                            key={`project-${index}`}
-                            project={project}
-                        />
-                    ))
-                }
+                <div className="col-span-12 lg:col-span-10 lg:col-start-2 grid grid-cols-12 gap-8">
+                    {data.list_data.map((project)=>(
+                            <div className="col-span-12 sm:col-span-6 xl:col-span-4" 
+                                key={`project-${project.id}`}
+                            >
+                                    <ProjectItem    
+                                        project={project}
+                                    />
+                            </div>
+                        ))
+                    }
+                </div>
             </div>
         </FadeInSection>
     )
@@ -146,16 +125,19 @@ const ListProjectSection = ({data}) =>{
 
 const StatSection = ({list_stats}) =>{
     return(
-        <FadeInSection className="py-8 lg:py-16 px-8 lg:px-16 flex flex-col gap-4">
-            <p className="text-center text-5xl uppercase font-semibold ">
+        <FadeInSection className="flex flex-col gap-4">
+            <p className={clsx( sectionTitle, "text-center uppercase")}>
                 My github stats
             </p>
-            <div className="grid grid-cols-12 gap-6 ">
-                { 
-                    list_stats.map(item=>(
-                        <GithubStat key={item.alt} src={item.src} alt={item.alt} />
-                    ))
-                }
+            <div className="grid grid-cols-12 mt-4">
+                <div className="col-span-12 lg:col-span-10 lg:col-start-2 grid grid-cols-12 gap-8">
+                    {list_stats.map(item=>(
+                            <div className="col-span-12 sm:col-span-6 xl:col-span-4" key={item.alt}>
+                                <GithubStat src={item.src} alt={item.alt} /> 
+                            </div>
+                        ))
+                    }
+                </div>
             </div>
         </FadeInSection>
     )

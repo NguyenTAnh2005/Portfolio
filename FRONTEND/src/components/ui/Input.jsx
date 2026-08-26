@@ -1,5 +1,7 @@
 import { Eye, EyeClosed} from 'lucide-react';
 import { useState } from "react";
+import { baseBorder, baseText, animateSlow, baseBackground } from '../../utils/style';
+import clsx from 'clsx';
 
 export const Input = ({inputType, Icon, label, required = true, placeHolder, isPassword = false, value, onChange}) =>{
     const [ showPassword, setShowPassword] = useState(false);
@@ -8,11 +10,13 @@ export const Input = ({inputType, Icon, label, required = true, placeHolder, isP
     };
 
     return (
-        <div className='flex-col my-3'>
+        <div className={clsx('flex-col my-3', animateSlow)}>
             <p className='text-start text-base font-semibold'>
                 {label}
             </p>
-            <div className='flex relative border-light-muted border border-solid items-center px-1 rounded-md'>
+            <div className= {clsx(
+                baseBorder, baseBackground, animateSlow, "border-2 items-center px-1 rounded-md flex relative",
+            )}>
                 <input
                     value={value}
                     onChange={onChange} 
@@ -22,15 +26,15 @@ export const Input = ({inputType, Icon, label, required = true, placeHolder, isP
                         ? inputType 
                         : (showPassword? "text" : "password")
                     }
-                    className='text-light-text dark:text-dark-text bg-light-bg dark:bg-dark-bg focus:outline-none indent-7 w-full p-2'
+                    className= {clsx(baseText, baseBackground, "transition-colors duration-500 ease-linear", "focus:outline-none indent-7 w-full p-2")}
                 />
 
-                <Icon className='text-light-muted dark:text-dark-muted absolute'/>
+                <Icon className='text-primary absolute'/>
                 
                 {isPassword && (
-                        <div onClick={changeModeType} className='cursor-pointer'>
+                        <button type='button' aria-label='Hide or display password' onClick={changeModeType} className='cursor-pointer'>
                             {showPassword? <Eye/> : <EyeClosed/>}
-                        </div>
+                        </button>
                 )}
             </div>
         </div>

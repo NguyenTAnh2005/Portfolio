@@ -6,6 +6,8 @@ import Index from "../pages/client/Index";
 import Project from "../pages/client/Project";
 import Timeline from "../pages/client/Timeline";
 
+import { NotFound } from "../pages/client/NotFound";
+
 import ClientLayout from "../layout/ClientLayout";
 
 const ClientRoutes = () =>{
@@ -17,6 +19,7 @@ const ClientRoutes = () =>{
                 <Route path="timeline" element={<Timeline/>}/>
                 <Route path="project" element={<Project/>}/>
                 <Route path="achievement" element={<Achievement/>}/>
+                <Route path= "*" element={<NotFound/>}/>
             </Route>
         </Routes>
     )

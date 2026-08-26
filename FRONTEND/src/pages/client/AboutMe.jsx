@@ -1,27 +1,22 @@
 import { useState, useEffect } from "react";
 import { infoService } from "../../services/info";
 import clsx from "clsx";
-import { motion } from "framer-motion";
-
-import {FaPython, FaJs, FaReact, FaBootstrap } from "react-icons/fa";
-import { RiTailwindCssFill } from "react-icons/ri";
-import { AiOutlineDotNet } from "react-icons/ai";
-import { SiFastapi } from "react-icons/si";
-import { TbBrandCpp, TbBrandCSharp } from "react-icons/tb";
-
-import { FaGithub, FaFacebook, FaInstagram, FaPhone, FaEnvelope } from "react-icons/fa";
-
-
-import FadeInSection from "../../components/FadeInSection";
-import { InfoBadge, TechBadge, ContactBadge } from "../../components/Badge";
-import { StatusLoading, StatusError, StatusNoData } from "../../components/FetchStatus";
 
 import { useSystemConfig } from "../../contexts/SystemConfigContext";
 
-const baseclass = ' text-light-text bg-light-surface dark:bg-dark-surface dark:text-dark-text ';
-const baseTransition = ' transition-all ease-linear duration-500';
+import { CONTACT_CONFIG } from "../../constants/aboutmeConfig";
+import FadeInSection from "../../components/wrapper/FadeInSection";
+import { InfoBadge, ContactBadge, Badge } from "../../components/ui/Badge";
+import { StatusLoading, StatusError, StatusNoData } from "../../components/ui/FetchStatus";
 
-// const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+import 
+{ 
+    baseBorder, baseTextBg, bgSurface, mutedText,
+    animateSlow, sectionTitle,
+    bodyLarge, display,
+    
+} from "../../utils/style";
+import { buildContactURL } from "../../utils/contactURL";
 
 export default function AboutMe(){
     const [data, setData] = useState(null);
@@ -31,28 +26,29 @@ export default function AboutMe(){
 
     useEffect(()=>{
         // Nếu thắc mắc về cột ismouted thì tham khảo trong docs unMouted nhé!
-        let isMouted = true;
+        let isMounted = true;
         const fetchData = async () =>{
             try{
-                setLoading(true);
-                //  await sleep(2000);
-                const response = await infoService.getInfo(1);
-                if(isMouted) {setData(response.data);}
+                if(isMounted){
+                    setLoading(true);
+                    const response = await infoService.getInfo(1);
+                    setData(response.data);
+                }
             }
             catch(err){
-                if(isMouted)
+                if(isMounted)
                 {
-                    console.log("Lỗi: ", err);
+                    console.error("Lỗi: ", err);
                     setError(err.message);
                 }
             }
             finally{
-                if(isMouted){setLoading(false);}
+                if(isMounted){setLoading(false);}
             }
         }
         fetchData();
         return ()=>{
-            isMouted=false;
+            isMounted=false;
         };
     },[]);
 
@@ -62,162 +58,164 @@ export default function AboutMe(){
     else if (!data){ content = <StatusNoData/>;} 
     else{
         content= (
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-16">
                 {/* Hero */}
-                <HeroSection data={data} isAvailable={isAvailable}/>
+                <HeroSection  data={data} isAvailable={isAvailable} />
                 {/* Bio*/}
-                <BioSection data={data}/>
+                <BioSection   data={data} />
                 {/* téch, libs */}
-                <TechListSection data={data} config_lang={LANGUAGE_CONFIG}  config_lib={LIB_CONFIG}/>
+                <TechListSection data={data} />
                 {/* Contact links */}
-                <ContactSection data={data}/>
+                <ContactSection data={data} />
             </div>
     )}
     
     return (
-        <div className="">
-            <div className={clsx(baseclass, " ")}>
-                {content}
+        <div className={clsx(baseTextBg, animateSlow)}>
+            {content}
+        </div>
+    )
+}
+
+const HeroSection = ({data, isAvailable})=>{
+    // Danh sách các Badge hiển thị 
+    const badge_list = [
+        {keyName: "gender", icon:"♂️", content: data.gender ? "Male":"Female" },
+        {keyName: "major", icon:"💼", content: data.major },
+        {keyName: "location", icon:"🏠", content: data.hometown},
+        {keyName: "contact", icon: "☎️", content: "Contact me"}
+    ]
+    return(
+        <FadeInSection className="grid grid-cols-12 gap-8 lg:gap-0">
+            {/* Thông tin cá nhân bên trái */}
+            <div className={clsx( animateSlow,
+                " col-span-12 flex flex-col gap-2 items-center",
+                " lg:items-start lg:col-span-5 lg:col-start-2"
+            )} >
+                    <span className={clsx( display, " uppercase text-center")}>
+                        <span>about </span>
+                        <span className="text-primary">me</span>
+                    </span>
+                    <Badge styleClass={clsx("text-lg px-4 py-2 mt-4")}>
+                        👤 {data.fullname}
+                    </Badge>
+                    <Badge styleClass={clsx("text-lg px-4 py-2 mb-4")}>
+                            {isAvailable
+                                ? "🎯 Available for work" 
+                                :"❌ Not available for work"
+                            } 
+                    </Badge>
+                    <p className={clsx(mutedText,
+                        "text-center lg:text-start text-base italic ", 
+                    )}>
+                        {data.intro}
+                    </p>
+                    <div className="flex justify-center lg:justify-start flex-wrap gap-2 mt-4">
+                        {badge_list.map(item =>(
+                            <InfoBadge 
+                                key={`badge-${item.keyName}`} 
+                                keyName = {item.keyName} 
+                                icon={item.icon} 
+                                content={item.content}
+                            />
+                        ))}
+                    </div>
+            </div>
+            {/* Avatar bên phải */}
+            <div className={clsx(
+                "col-span-12 flex justify-center items-center ", " lg:col-span-6"
+            )} >
+                <img
+                className={clsx( animateSlow, baseBorder, " w-full aspect-[1/1] max-w-[360px] rounded-xl border-4")}
+                // src={MyAvt}
+                src="https://4kwallpapers.com/images/walls/thumbs_3t/26748.jpg" 
+                alt="about-me-avt"/>
+            </div>
+        </FadeInSection>
+
+    )
+}
+
+const BioSection = ({data}) =>{
+    return(
+        <FadeInSection>
+            <p className={clsx( sectionTitle, "italic text-center max-w-xl mx-auto")}>
+                "{data.bio}"
+            </p>
+        </FadeInSection>
+    )
+}
+
+const ListTech = ({list_data, title, keyname}) =>{
+    return(
+        <div className="flex flex-col gap-2">
+            <p className={clsx(bodyLarge)}>
+                {title}
+            </p>
+            <div className="flex flex-wrap gap-4">
+                {list_data.map((item, index)=>(
+                    <Badge key={`${keyname}-${index}`} styleClass={clsx("font-bold font-mono py-2 px-4 text-center")}>
+                        {item}
+                    </Badge>
+                ))}
             </div>
         </div>
     )
 }
 
-const LANGUAGE_CONFIG = {
-  "Python": { name: "Python", icon: FaPython, website: "https://python.org", styleClass: " bg-[#3776AB] text-white"},
-  "C#": { name: "C#", icon: TbBrandCSharp ,website: "https://microsoft.com", styleClass: " bg-[#239120] text-white"},
-  "C++": { name: "C++", icon: TbBrandCpp,  website: "https://isocpp.org",styleClass: " bg-[#00599C] text-white" },
-  "JavaScript": { name: "JavaScript", icon: FaJs, website: "https://mozilla.org", styleClass: " bg-[#F7DF1E] text-black "}
-};
-
-const LIB_CONFIG = { 
-    "Bootstrap": { name: "Bootstrap",  icon: FaBootstrap, website: "https://getbootstrap.com", styleClass: "bg-[#7952B3] text-white font-semibold"},
-    "React": {  name: "React", icon: FaReact, website: "https://react.dev",styleClass: "bg-[#61DAFB] text-[#20232A] font-bold" },
-    "Tailwind": { name: "Tailwind", icon: RiTailwindCssFill, website: "https://tailwindcss.com",  styleClass: "bg-[#38BDF8] text-white font-semibold"},
-    ".NET": {name: ".NET", icon: AiOutlineDotNet, website: "https://microsoft.com", styleClass: "bg-[#512BD4] text-white font-semibold"},
-    "FastAPI": { name: "FastAPI",  icon: SiFastapi, website: "https://tiangolo.com", styleClass: "bg-[#009688] text-white font-semibold"}
-};
-
-const CONTACT_CONFIG = {
-    phone:   { icon: FaPhone, content:"+84 328884320",     styleClass: "bg-green-500 text-white" },
-    github:  { icon: FaGithub, content:"NguyenTAnh2005",   styleClass: "bg-[#181717] text-white" },
-    email1:  { icon: FaEnvelope, content:"23050118@student.bdu.edu.vn", styleClass: "bg-red-500 text-white" },
-    email2:  { icon: FaEnvelope, content:"anhnguyentaun@gmail.com", styleClass: "bg-red-500 text-white" },
-    facebook:{ icon: FaFacebook, content:"tuan.anh.514281", styleClass: "bg-[#1877F2] text-white" },
-    instagram:{ icon: FaInstagram, content:"tanh_2005_",styleClass: "bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white" },
-};
-
-const HeroSection = ({data, isAvailable})=>{
-    const badge_list = [
-        {keyName: "gender", icon:"👤", content: data.gender ? "Male":"Female" },
-        {keyName: "major", icon:"💼", content: data.major },
-        {keyName: "location", icon:"🏠", content: data.hometown}
-    ]
+const TechListSection = ({data})=>{
     return(
-        <motion.div 
-        // Tham Khảo copy paste
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6 }}
-        className="grid grid-cols-12 gap-8 py-8">
-            <div className={clsx("col-span-12 px-8 flex flex-col gap-2 items-center ", "transition-all duration-500 ease-linear ", " lg:col-span-7")} >
-                    <span className={clsx("text-8xl uppercase text-center font-serif mt-8")}>
-                        <span>about </span>
-                        <span className="text text-primary">me</span>
-                    </span>
-                    <span className="tech-tag text-base mb-4">
-                        {isAvailable? "🎯 Available for work" :"❌ Not available for work"}  
-                    </span>
-                    <span className={clsx("px-3 py-1 rounded-md border-2 text-lg font-bold w-fit", baseTransition , " duration-100 hover:scale-105",
-                        "bg-primary/10  border-primary/30  dark:bg-primary/5 dark:border-primary/40")}>
-                        {data.fullname}
-                    </span>
-                    <span className={clsx("text-center text-base italic mt-8 mb-8 px-8 lg:px-0 ", "text-light-muted dark:text-dark-muted")}>
-                        {data.intro}
-                    </span>
-                    <div className="flex flex-wrap gap-4">
-                    </div>
-                    <div className="flex justify-center flex-wrap gap-2 md:gap-4 lg:gap-8">
-                        {badge_list.map(item =>(
-                            <InfoBadge key={`badge ${item.keyName}`} icon={item.icon} content={item.content}/>
-                        ))}
-                        <span className="cursor-pointer">
-                            <a href="#contact"> <InfoBadge icon={"☎️"} content={"Contact me"}/> </a>
-                        </span>
-                    </div>
-            </div>
-            <div className={clsx("col-span-12 flex justify-center items-center ", " lg:col-span-5 lg:col-start-8")} >
-                <img
-                className={clsx(baseTransition, " w-full aspect-[1/1] rounded-lg border-4 ", "max-w-80 dark:border-primary/80 border-primary/60", " lg:max-w-80 ")}
-                // src={MyAvt}
-                src="https://4kwallpapers.com/images/walls/thumbs_3t/26748.jpg" 
-                alt="about-me-avt"/>
-            </div>
-        </motion.div>
-    )
-}
-const BioSection = ({data}) =>{
-    return(
-        <FadeInSection className={clsx(baseTransition, " col-span-12 text-4xl py-16 px-8 "," ")}>
-            <p className="italic font-serif text-center max-w-xl mx-auto">
-                "{data.bio}."
-            </p>
-        </FadeInSection>
-    )
-}
-
-const renderTechBadges = (dataFetch, dataConfig) =>{
-    const content = (
-        dataFetch?.map((item)=>{
-            const config = dataConfig[item];
-            if (!config){
-                console.warn(`Chưa có config cho: ${item}`);
-                return null;
-            }
-            return(
-                <TechBadge
-                key={config.name} name={config.name}  website={config.website} 
-                styleClass={config.styleClass}icon={config.icon}/>
-            )
-        })
-    )
-    return(
-        <>
-        {content}
-        </>
-    );
-}
-
-const TechListSection = ({data, config_lang, config_lib})=>{
-    return(
-        <FadeInSection className={clsx(baseTransition, " p-8 flex flex-col gap-24 lg:grid lg:grid-cols-12 ")}>
-            <div className="flex flex-col gap-8 lg:grid lg:col-span-6 lg:justify-center lg:items-start lg:h-fit">
-                <p className="text-3xl uppercase text-center font-bold">
-                    Programming Languages
+        <FadeInSection className={clsx(
+            bgSurface, animateSlow, " border-2", baseBorder,
+            "flex flex-col gap-8 px-4 py-8 rounded-2xl justify-start"
+        )}>
+            <div className="mb-4">
+                <p className={clsx( sectionTitle, " text-center mb-4")}>
+                    My Technology 
                 </p>
-                <div className="flex gap-8 flex-wrap justify-center lg:justify-start">
-                    {renderTechBadges(data.language, config_lang)}
-                </div>
-            </div>
-            <div className="flex flex-col gap-8 lg:grid lg:col-span-6 lg:justify-center lg:items-start lg:h-fit">
-                <p className="text-3xl uppercase text-center font-bold ">
-                    Frameworks & Library
+                <p className={clsx(mutedText, bodyLarge, "text-center")}>
+                    Anything about IT that I know 
                 </p>
-                <div className="flex gap-8 flex-wrap justify-center lg:justify-start">
-                    {renderTechBadges(data.framework, config_lib)}
-                </div>
             </div>
+
+            <ListTech
+                list_data={data.techstack.language} 
+                keyname={"language"}
+                title={"Programming language"}
+            />
+            <ListTech
+                list_data={data.techstack.framework} 
+                keyname={"framework"}
+                title={"Framework and Library"}
+            />
+            <ListTech
+                list_data={data.techstack.database} 
+                keyname={"database"}
+                title={"Database"}
+            />
+            <ListTech
+                list_data={data.techstack.tools} 
+                keyname={"tool"}
+                title={"Tools"}
+            />
         </FadeInSection>
+        
     )
 }
 
 const ContactSection = ({ data }) => {
     return(
-        <FadeInSection className={clsx(baseTransition, " flex flex-col gap-8 py-16 lg:px-16")}>
-            <p className="text-4xl font-bold text-center uppercase ">
-                Contact me
-            </p>
+        <FadeInSection className={clsx(animateSlow,
+            " flex flex-col gap-4 lg:px-16"
+        )}>
+            <div className="mb-4">
+                <p className={clsx( sectionTitle, " text-center mb-4")}>
+                    Contact me
+                </p>
+                <p className={clsx(mutedText,bodyLarge, "text-center")}>
+                    Leave a message. I'm always here to listen. 
+                </p>
+            </div>
             <div id="contact" className="flex flex-wrap justify-center gap-4">
                 {data.contact.map((item) => {
                     const config = CONTACT_CONFIG[item.name];
@@ -229,8 +227,7 @@ const ContactSection = ({ data }) => {
                             styleClass={config.styleClass}
                             name={item.name}
                             content={config.content}
-                            url={item.name.startsWith("email") ? `mailto:${item.url}`
-                                : item.name === "phone" ? `tel:${item.url}` : item.url}
+                            url={buildContactURL(item.url)}
                         />
                     );
                 })}

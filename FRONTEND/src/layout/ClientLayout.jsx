@@ -1,67 +1,88 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import ThemeToggle from "../components/ThemeToggle";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import clsx from "clsx";
+import { Menu, X } from "lucide-react";
+import { Button } from "../components/wrapper/Button";
+
 import {useSystemConfig} from "../contexts/SystemConfigContext";
+import { ListNavItems, ListQuickLinks, ListContacts } from "../constants/navigation";
+import ThemeToggle from "../components/ui/ThemeToggle";
+import 
+{ 
+    baseTextBg, animateSlow, animateFast, bgSurface, baseText
 
-const baseclass = ' text-light-text bg-light-surface dark:bg-dark-surface dark:text-dark-text ';
-const baseTransition = ' transition-all ease-linear duration-500 ';
+} from "../utils/style";
 
-function ClientLayout(){
+const pageSpaceX = ' px-4 md:px-8 lg:px-12 ';
+const pageSpacing = `${pageSpaceX} py-16`;
+const pageWidth = ' max-w-7xl mx-auto ';
+
+export const ClientLayout=()=>{
     const {resumeURL} = useSystemConfig();
+    const location = useLocation();
+    
+    // Tự động cuộn lên đầu trang 
+    useEffect(()=>{
+        window.scroll(0, 0);
+    },[location]);
+
     return (
-        <div className="relative flex flex-col">
-            <Header/>
-            <div className={clsx(baseTransition, baseclass, "  py-4")}>
+        <div className="relative ">
+            {/* HEADER */}
+            <div className={clsx( animateSlow, bgSurface, baseText,
+                pageSpaceX, "py-4 ",
+                "  shadow-lg sticky top-0 right-0 z-50"
+            )}>
+                <Header NavItems={ListNavItems} location={location}/>
+            </div>
+            <div className={clsx( 
+                animateSlow,  pageSpacing, baseTextBg
+            )}>
                 <Outlet/>
             </div>
-            <Footer resumeURL={resumeURL}/>
+            <div className={clsx( pageSpaceX, "py-4", animateSlow, 
+                " bg-dark-surface text-light-muted"
+            )}>
+                <Footer resumeURL={resumeURL} listContacts={ListContacts} listQuickLinks={ListQuickLinks}/>
+            </div>
         </div>
     )
 }
 
-const Header = () =>{
-    const location = useLocation();
+const Header = ({NavItems, location}) =>{
     const [expand, setExpand] = useState(false);
     const changeModeExpand = () =>{
         setExpand(prev => !prev);
     };
     useEffect(()=>{
         setExpand(false);
-    },[location.pathname])
-    const NavItems = [
-        {"link":"/", "content": "Home"},
-        {"link":"/about-me", "content": "About Me"},
-        {"link":"/timeline", "content": "Timeline"},
-        {"link":"/project", "content": "Project"},
-        {"link":"/achievement", "content": "Achievement"},
-    ]
+    },[location.pathname]);
+
     return (
         <>
-            <div className = {clsx(baseTransition, "text-light-text bg-light-bg dark:bg-dark-bg dark:text-dark-text", "sticky top-0 flex items-center justify-between px-4 md:px-8 lg:px-12 py-4 shadow-md z-50" )}>
-                <div className="flex justify-center items-center gap-2">
-                    <span className="text-xl btn-primary">
+            {/* Header ngang */}
+            <div className = {clsx( animateSlow, pageWidth,
+                    " flex items-center justify-between" 
+            )}>
+                <Link to={"/"} className="flex justify-center items-center gap-2">
+                    <span className="text-xl bg-primary text-dark-text px-4 py-2 rounded-md">
                         A
                     </span>
                     <span className="text-2xl font-semibold">
                             Portfolio
                     </span>
-                </div>
-                <div className=" hidden gap-4 lg:flex lg:justify-center">
+                </Link>
+                <div className=" hidden gap-4 md:flex md:justify-center">
                     {NavItems.map(item =>(
-                        <NavItem
-                            location={location}
-                            content={item.content} 
-                            linkTo={item.link} 
-                            key={`nav-item-${item.link}`}
+                        <NavItem location={location} content={item.content} 
+                            linkTo={item.link}  key={`nav-item-${item.link}`}
                         />
                     ))}
                 </div>
                 <div className="flex items-center gap-4">
                     <ThemeToggle/>
-                    <div className="btn-primary p-2 lg:hidden transition-all duration-500 ease-in-out" onClick={changeModeExpand}>
+                    <div className="btn-primary p-2 md:hidden transition-all duration-500 ease-in-out" onClick={changeModeExpand}>
                         {/* Hiệu ứng tham khảo AI */}
                         {!expand ? (
                             <motion.div
@@ -88,7 +109,7 @@ const Header = () =>{
                     </div>
                 </div>
             </div>
-            <div className="sticky top-24 right-0 ">
+            {/* Header dọc ẩn hiện */}
             <AnimatePresence>
                 {expand&&(
                     <motion.div 
@@ -97,7 +118,7 @@ const Header = () =>{
                         // Giúp menu trượt lên + mờ dần
                         exit={{opacity:0, y:-20}}
                         transition={{duration:0.5, ease:"easeInOut"}}
-                        className=" absolute top-0 right-[2.5%] w-[95%] flex flex-col gap-4 items-start p-4 bg-light-bg dark:bg-dark-bg lg:hidden z-40 card">
+                        className=" absolute top-full right-[2.5%] w-[95%] flex flex-col gap-4 items-start p-4 bg-light-bg dark:bg-dark-bg md:hidden z-40 card">
                         {NavItems.map(item =>(
                             <NavItem
                                 location={location}
@@ -109,7 +130,6 @@ const Header = () =>{
                     </motion.div>
                 )}
             </AnimatePresence>
-            </div>
         </>            
 
 
@@ -118,9 +138,7 @@ const Header = () =>{
 
 const NavItem = ({linkTo, content, location}) =>{
     // Sử dụng useLocation để lấy đầy đủ đường dẫn hiện tại 
-    
     let isActive = false;
-
     // Nếu link đang là index page thì buộc đường dẫn hiện tại phải khớp "/"
     if(linkTo === "/"){
         isActive = location.pathname === "/";
@@ -132,15 +150,12 @@ const NavItem = ({linkTo, content, location}) =>{
 
     return(
         <Link to = {linkTo}
-        className= {`relative px-2 py-1 cursor-pointer transition-colors duration-300
-            ${
-                isActive 
-                ? ' text-primary font-semibold'
-                : " text-light-muted dark:text-dark-muted hover:text-primary-hover"
-            }
-        `}
-        >
-            <span className='relative z-10 text-base lg:text-xl'>
+        className = {clsx(
+            "relative px-2 py-1 cursor-pointer transition-colors duration-300",
+            isActive ? " text-primary font-semibold":"text-light-muted dark:text-dark-muted "
+        )}>
+            <span className={clsx(animateFast,
+                "relative z-10 text-base lg:text-xl hover:text-primary-hover")}>
                 {content}
             </span>
 
@@ -157,89 +172,71 @@ const NavItem = ({linkTo, content, location}) =>{
             }
         </Link>
     )
-}
+};
 
-function Footer({resumeURL}){
+const Footer=({resumeURL, listQuickLinks, listContacts})=>{
+    const groupFlex = " flex flex-col gap-3 "
     return(
-        <div id="FOOTER" className={`bg-dark-bg text-light-muted  text-sm py-12`}>
-            {/* Nửa trên chứa các cục thông tin */}
-            <div className={`flex flex-col gap-12 px-6 lg:flex-row lg:justify-between lg:px-12`}>
-                {/* Cột 1: Thương hiệu */}
-                <div className="flex flex-col gap-3 lg:max-w-sm">
-                    <h2 className="text-dark-text tracking-tight 
-                                    font-bold text-3xl">
-                        Nguyen Tuan Anh
-                    </h2>
-                    <h4 className="text-base font-medium">
-                        🏫 Binh Duong University - Software Engineer 🖥💻
-                    </h4>
-                    <p className="leading-relaxed">
-                        I may have less experience, but I have a limitless drive to learn.
-                    </p>
-                </div>
-                {/*Cột 2: Quick Links  */}
-                <div className="flex flex-col gap-3">
-                    <h2 className="text-dark-text 
-                                    text-lg font-semibold mb-2">
-                        Quicklink
-                    </h2>
-                    <QuickLinkItem content={"About me"} link={"/about-me"} />
-                    <QuickLinkItem content={"Projects"} link={"/project"} />
-                    <QuickLinkItem content={"Timelines"} link={"/timeline"} />
-                    <QuickLinkItem content={"Achievements"} link={"/achievement"} />
-                </div>
-                {/*Cột 3: Contact */}
-                <div className="flex flex-col gap-3">
-                    <h2 className="text-dark-text 
-                                    text-lg font-semibold mb-2">
-                        Contact Me
-                    </h2>
-                    <QuickLinkItem content={"23050118@bdu.edu.vn"} />
-                    <QuickLinkItem content={"+84 328884320"} />
-                    <QuickLinkItem content={"More contact info"} link={"/about-me"} />
-                </div>
+        <div className={clsx(pageWidth, " grid grid-cols-12 text-sm")}>
+            {/* Thương hiệu */}
+            <div className={clsx(" col-span-12 md:col-span-7", groupFlex )}>
+                <h2 className="text-dark-text tracking-tight font-bold text-3xl">
+                    Nguyen Tuan Anh
+                </h2>
+                <h4 className="text-base font-medium">
+                    🏫 Binh Duong University - Software Engineer 🖥💻
+                </h4>
+                <p className="leading-relaxed">
+                    I may have less experience, but I have a limitless drive to learn.
+                </p>
+            </div>
+            {/* Quick Links  */}
+            <div className={clsx("col-span-12 md:col-span-2 ", groupFlex )}>
+                <h2 className="text-dark-text text-lg font-semibold mb-2">
+                    Quicklink
+                </h2>
+                {listQuickLinks.map((item)=>(
+                    <QuickLinkItem key={`quick-link-${item.content}`} content={item.content} link = {item.link} />
+                ))}
             </div>
 
-            {/* Nửa dưới chứa thông tin bản quyền */}
-            <div className="flex flex-col items-center gap-8 mt-12">
-                <hr className="w-[95%] border-[1/2px] border-light-muted  dark:border-dark-muted" />
+            {/* Contact */}
+            <div className={clsx("col-span-12 md:col-span-3 ", groupFlex )}>
+                <h2 className="text-dark-text text-lg font-semibold mb-2">
+                    Contact Me
+                </h2>
+                {listContacts.map((item)=>(
+                    <QuickLinkItem key={`quick-link-${item.content}`} content={item.content} link = {item.link} />
+                ))}
+            </div>
+
+            {/* Thông tin bản quyền */}
+            <div className="col-span-12 flex flex-col items-center gap-8 mt-12">
+                <hr className="w-full border border-dark-muted" />
                 <p className="text-base">
                     © 2026 Nguyen Tuan Anh. All rights reserved.
                 </p>
             </div>
             {/* Nút link đến Cv PDF */}
-            <div className="flex justify-end mt-6 px-8">
-                <a href={resumeURL} className="w-fit btn-primary cursor-pointer">
-                    View My Cv
-                </a>
+            <div className="col-span-12 flex justify-end mt-6 px-8">
+                <Button style={"rounded-md px-4 py-2"}>
+                    <a href={resumeURL} className={clsx( "rounded-md text-lg w-fit cursor-pointer")}>
+                        View My CV
+                    </a>
+                </Button>
+
             </div>
         </div>
 
     )
-}
+};
 
-function QuickLinkItem({content, link = ""}){
-    
+const QuickLinkItem = ({content, link = ""})=>{
     return(
-        <>
-        {
-            link == ""?(
-            <span
-                className="hover:text-primary-hover transition-all duration-300 ease-linear"
-            >
-                {content}
-            </span>
-            ):(
-            <Link
-                to = {link}
-                className="hover:text-primary-hover transition-all duration-300 ease-linear"
-            >
-                {content}
-            </Link>
-            )
-        }
-        </>
+        <Link to = {link} className="hover:text-primary-hover transition-all duration-300 ease-linear">
+            {content}
+        </Link>
     )
-}
+};
 
 export default ClientLayout;

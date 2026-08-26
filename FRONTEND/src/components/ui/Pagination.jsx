@@ -3,6 +3,8 @@ import clsx from "clsx";
 import { ChevronRight } from 'lucide-react';
 import { ChevronLeft } from 'lucide-react';
 
+import { baseBorder, animateFast, } from "../../utils/style";
+
 
 export const Pagination = ({current_page, count_page, onChangeIndexPage}) =>{
     let list_page_index = []
@@ -28,12 +30,11 @@ export const Pagination = ({current_page, count_page, onChangeIndexPage}) =>{
 const PageIndex = ({current_page, page_num, onChangeIndexPage}) =>{
     // console.log(current_page);
     return(
-        <span
-            className={clsx(
-                "flex justify-center items-center px-4 py-2 rounded-md bg-primary/15 cursor-pointer",
-                page_num == current_page && " text-primary border border-primary "
-            )}
-            onClick={()=>{onChangeIndexPage(page_num)}} 
+        <span className={clsx( "border-2", baseBorder, animateFast,
+            " flex justify-center text-lg items-center px-3 py-1 rounded-md cursor-pointer",
+            page_num === current_page && " bg-primary text-dark-text font-bold"
+        )}
+        onClick={()=>{onChangeIndexPage(page_num)}} 
         >
             {page_num}
         </span>
@@ -48,12 +49,13 @@ const PagePrev = ({current_page, onChangeIndexPage}) =>{
     }
     return(
         <span
-            className={clsx(
-                "flex justify-center items-center px-4 py-2 rounded-md bg-primary/15 cursor-pointer",
+            className={clsx( baseBorder, "border-2",
+                "flex justify-center items-center p-2 rounded-md bg-primary/40 cursor-pointer",
+                current_page==1 ? "opacity-40 cursor-not-allowed" : " opacity-100"
             )}
             onClick={handleChangePrev} 
         >
-            <ChevronLeft/>
+            <ChevronLeft size={20} strokeWidth={2.5}/>
         </span>
     )
 }
@@ -66,12 +68,13 @@ const PageNext = ({current_page, count_page, onChangeIndexPage}) =>{
     }
     return(
         <span
-            className={clsx(
-                "flex justify-center items-center px-4 py-2 rounded-md bg-primary/15 cursor-pointer",
+            className={clsx(baseBorder, "border-2",
+                "flex justify-center items-center p-2 rounded-md bg-primary/40 cursor-pointer",
+                current_page==count_page ? "opacity-40 cursor-not-allowed" : " opacity-100"
             )}
             onClick={handleChangeNext} 
         >
-            <ChevronRight/>
+            <ChevronRight size={20} strokeWidth={2.5}/>
         </span>
     )
 }
