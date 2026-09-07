@@ -1,4 +1,4 @@
-## Cách thiết kế axios service cho Timeline
+## `🎯 Note về thiết kế axios service cho Multipart `
 
 Nguyên tắc: **mỗi hàm service ứng với đúng 1 endpoint**, tham số truyền vào là những gì _người gọi hàm_ (component React) có sẵn — không nhất thiết giống y hệt tham số bên backend.
 
@@ -67,6 +67,41 @@ export const TimelineService = {
 - **`create` vs `update` dùng chung `buildFormData`**: vì cấu trúc field giống hệt nhau (chỉ khác là create thì các field bắt buộc, update thì optional) — tránh lặp code.
 - **Không cần tự xử lý `sort_order` rỗng ở đây**: đó là việc của component/form khi submit (ví dụ nếu input rỗng thì đừng đưa key `sort_order` vào object `data` truyền xuống service, thay vì gửi `""`).
 - **`getAll(params)`** nhận object rồi để axios tự build query string qua `{ params }` — không cần bạn tự nối chuỗi URL.
+
+<blockquote>
+
+## Path param vs Query param
+
+Đây là 2 khái niệm khác hẳn nhau, dễ lẫn:
+
+**Path param** — nằm ngay trong đường dẫn URL, dùng để **xác định 1 tài nguyên cụ thể** (bắt buộc phải có, thiếu là sai URL):
+
+```
+GET /timeline/5
+              ↑ đây là path param, "5" = id của timeline cần lấy
+```
+
+Backend khai báo qua chính path: `@router.get("/{timeline_id}")`. Frontend gọi: `axiosInstance.get(\`${ENDPOINT}/5\`)` — bạn tự nối chuỗi vào URL.
+
+**Query param** — nằm sau dấu `?`, dạng `key=value`, nối nhau bằng `&`, dùng cho **lọc/phân trang/sắp xếp** (thường optional, có giá trị mặc định):
+
+```
+GET /timeline/?skip=0&limit=10&sort_by=id&order=asc
+               ↑ đây là các query param
+```
+
+Backend khai báo bằng `Query(...)` (như trong `get_all` của bạn: `skip: int = Query(0, ...)`). Frontend gọi thì **không tự nối chuỗi tay**, mà đưa object vào `params`, axios tự build:
+
+```js
+axiosInstance.get(`${ENDPOINT}/`, {
+  params: { skip: 0, limit: 10, sort_by: "id", order: "asc" },
+});
+// axios tự biến thành: GET /timeline/?skip=0&limit=10&sort_by=id&order=asc
+```
+
+→ Quy tắc chọn: cái gì để **xác định "cái nào"** (record nào) → path param. Cái gì để **lọc/điều chỉnh cách trả về** (bao nhiêu, sắp theo gì) → query param.
+
+</blockquote>
 
 ## FormData là gì và tại sao "gom 1 cục" rồi gửi?
 
@@ -168,37 +203,6 @@ Nên giữ, và đúng là nó khớp với logic backend bạn đã viết. Đ�
 → Hai lớp lọc bổ trợ nhau, không thừa: **frontend lọc để không gửi field thừa lên**, **backend lọc phòng trường hợp có field gửi lên nhưng rỗng `""`** (như bạn note trong file — do Swagger/form luôn gửi `""` chứ không bỏ hẳn field). Với form React tự viết tay (không phải Swagger), bạn kiểm soát được việc có `append` hay không nên ít bị dính case `""`, nhưng vẫn nên giữ điều kiện `undefined/null` để code chủ động, không phụ thuộc hoàn toàn vào backend dọn rác.
 
 Một lưu ý nhỏ: nếu sau này bạn có ô input nào người dùng **cố tình xoá trắng để xoá dữ liệu cũ** (ví dụ muốn xoá hẳn `desc`), thì cách lọc `undefined/null` này sẽ **không cho phép xoá** (vì `""` vẫn bị backend bỏ qua). Hiện tại thiết kế backend của bạn không hỗ trợ "set về rỗng" khi update — đây là giới hạn đã biết (bạn có ghi chú "nếu muốn set none thì phải điền form hơi khác" trong code cũ), không phải bug, chỉ là điều cần nhớ khi thiết kế form update sau này.
-
-## Path param vs Query param
-
-Đây là 2 khái niệm khác hẳn nhau, dễ lẫn:
-
-**Path param** — nằm ngay trong đường dẫn URL, dùng để **xác định 1 tài nguyên cụ thể** (bắt buộc phải có, thiếu là sai URL):
-
-```
-GET /timeline/5
-              ↑ đây là path param, "5" = id của timeline cần lấy
-```
-
-Backend khai báo qua chính path: `@router.get("/{timeline_id}")`. Frontend gọi: `axiosInstance.get(\`${ENDPOINT}/5\`)` — bạn tự nối chuỗi vào URL.
-
-**Query param** — nằm sau dấu `?`, dạng `key=value`, nối nhau bằng `&`, dùng cho **lọc/phân trang/sắp xếp** (thường optional, có giá trị mặc định):
-
-```
-GET /timeline/?skip=0&limit=10&sort_by=id&order=asc
-               ↑ đây là các query param
-```
-
-Backend khai báo bằng `Query(...)` (như trong `get_all` của bạn: `skip: int = Query(0, ...)`). Frontend gọi thì **không tự nối chuỗi tay**, mà đưa object vào `params`, axios tự build:
-
-```js
-axiosInstance.get(`${ENDPOINT}/`, {
-  params: { skip: 0, limit: 10, sort_by: "id", order: "asc" },
-});
-// axios tự biến thành: GET /timeline/?skip=0&limit=10&sort_by=id&order=asc
-```
-
-→ Quy tắc chọn: cái gì để **xác định "cái nào"** (record nào) → path param. Cái gì để **lọc/điều chỉnh cách trả về** (bao nhiêu, sắp theo gì) → query param.
 
 ## 4. Thiết kế state bên FE cho form Create
 

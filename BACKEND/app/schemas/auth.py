@@ -8,6 +8,8 @@ class UserLogin(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    message: str
+
 
 class TokenPayload(BaseModel):
     data: Optional[int] = None  # Chứa id user

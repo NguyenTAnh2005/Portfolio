@@ -1,6 +1,6 @@
-# Frontend Style & Design System — Guide tổng quan
+# `🎯 Note về  Frontend Style & Design System`
 
-> Tài liệu tham khảo dài hạn, không bám theo 1 task cụ thể. Dùng để tra cứu mỗi khi phân vân "cái này nên đặt ở đâu / dùng font nào / màu nào".
+> Tài liệu tham khảo về cách tổ chức cấu trúc cho hệ thống UI frontend."
 
 ---
 

@@ -4,12 +4,12 @@ from sqlalchemy import func
 
 from typing import Optional
 from app.models.models import Project
-from app.core.security import AppException
+from app.core.exception import AppException
 
 from app.core import cloudinary_config as cloud_config
 from app.core import github_service
 from app.schemas import project as schemas_project
-from app.crud import project as project_crud
+from app.crud import project as crud_project
 
 BASE_FOLDER="Portfolio/Projects"
 
@@ -77,7 +77,7 @@ async def create_project(
         last_updated= github_service.parse_github_datetime(repo_info["last_updated"]) 
     )
 
-    return project_crud.create(
+    return crud_project.create(
         db=db, create_data=create_data,
         img_url=new_image["secure_url"],
         img_public_id=new_image["public_id"]
@@ -99,7 +99,7 @@ async def update_project_text_form(
     4. Gửi cục data kèm thêm cái gì cần thiết để CRUD tiến hành cập nhật.
     """
     # 1. Check có trong DB?
-    db_project = project_crud.get_by_id(db=db, project_id=target_id)
+    db_project = crud_project.get_by_id(db=db, project_id=target_id)
     # 2. Check trùng lặp
     check_conflict(
         db=db, exclude_id=target_id,
@@ -124,7 +124,7 @@ async def update_project_text_form(
         update_data_fetch.last_updated = github_service.parse_github_datetime(info_response["last_updated"])
 
     # 4. Gọi CRUD 
-    return project_crud.update_text_form(
+    return crud_project.update_text_form(
         db=db, db_project= db_project,
         update_data= update_data,
         update_data_fetch= update_data_fetch
@@ -143,12 +143,12 @@ def update_project_img_file(
         + trả về object cho router
     """
     # kiểm tra có trong db?
-    db_project = project_crud.get_by_id(db=db, project_id=target_id)
+    db_project = crud_project.get_by_id(db=db, project_id=target_id)
     # lưu public_id cũ để xóa, upload ảnh lên
     old_img_public_id = db_project.img_public_id
     new_img = cloud_config.upload_image(file=img_file.file, folder_name=f"{BASE_FOLDER}/{target_id}")
     # gọi crud cập nhật (lưu biến)
-    updated_project = project_crud.update_img_file(
+    updated_project = crud_project.update_img_file(
         db=db, db_project= db_project,
         new_secure_url= new_img["secure_url"],
         new_public_id=new_img["public_id"]
@@ -168,7 +168,7 @@ async def sync_project(
         + 2. fetch info và gán vào cho pydantic class 
         + 3. Gọi crud 
     """
-    db_project = project_crud.get_by_id(db=db, project_id= target_id)
+    db_project = crud_project.get_by_id(db=db, project_id= target_id)
     target_project_url = db_project.project_url
     # gọi fetch data và gán từng giá trị cho pydantic class
     repo_response = await github_service.get_repo_info(target_project_url)
@@ -179,7 +179,7 @@ async def sync_project(
     sync_data.created_at = github_service.parse_github_datetime(repo_info["created_at"])
     sync_data.last_updated = github_service.parse_github_datetime(repo_info["last_updated"])
 
-    return project_crud.sync(db= db, db_project=db_project, sync_data=sync_data)
+    return crud_project.sync(db= db, db_project=db_project, sync_data=sync_data)
 
 # Logic delete project 
 def delete_project(
@@ -191,10 +191,10 @@ def delete_project(
     + 2. Gọi crud xóa object
     + 3. Tiến hành xóa ảnh + folder trên cloudinary
     """
-    db_project = project_crud.get_by_id(db= db, project_id= target_id)
+    db_project = crud_project.get_by_id(db= db, project_id= target_id)
     deleted_public_id = db_project.img_public_id
 
-    project_crud.delete(db= db, db_project= db_project)
+    crud_project.delete(db= db, db_project= db_project)
 
     cloud_config.destroy_image(public_id=deleted_public_id)
     cloud_config.delete_folder(folder_name=f"{BASE_FOLDER}/{target_id}")

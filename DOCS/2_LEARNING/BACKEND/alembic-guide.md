@@ -1,16 +1,16 @@
-# Kiến thức nền tảng: Model & Alembic trong FastAPI Backend
+# `🎯 Note về Model & Alembic trong Backend`
 
-> Tài liệu này giải thích **bản chất** của Model (SQLAlchemy) và Alembic (migration tool), để bạn hiểu rõ *tại sao* và *như thế nào*, không chỉ copy code.
+> Tài liệu này giải thích **bản chất** của Model (SQLAlchemy) và Alembic (migration tool),
 
----
-
-## 1. Vấn đề cần giải quyết là gì?
+## 1. Vấn đề
 
 Khi code backend, bạn cần:
+
 1. Định nghĩa **cấu trúc dữ liệu** trong Python (class) → đây là **Model**.
 2. Biến cấu trúc đó thành **bảng thật** trong PostgreSQL → đây là việc **Migration**, và Alembic là công cụ làm việc đó.
 
 Nói ngắn gọn:
+
 - **Model** = "tôi muốn dữ liệu trông như thế nào" (khai báo trong code).
 - **Alembic** = "hãy tạo/sửa bảng trong database cho khớp với khai báo đó" (thực thi).
 
@@ -52,6 +52,7 @@ class User(Base):
 ```
 
 Ý nghĩa từng phần:
+
 - `__tablename__`: tên bảng thật trong PostgreSQL.
 - `Mapped[type]`: kiểu dữ liệu Python tương ứng — giúp IDE gợi ý, type-check.
 - `mapped_column(...)`: khai báo chi tiết cột (kiểu SQL, ràng buộc, mặc định...).
@@ -85,13 +86,14 @@ class User(Base):
 
 ---
 
-## 3. Alembic là gì và hoạt động ra sao?
+## 3. Alembic
 
 Alembic là công cụ **quản lý phiên bản schema database**, tương tự Git nhưng cho cấu trúc bảng.
 
 ### 3.1 Vì sao không tự chạy `Base.metadata.create_all()` cho xong?
 
 `create_all()` chỉ tạo bảng nếu **chưa tồn tại**. Nó không biết cách:
+
 - Sửa một cột đã tồn tại (đổi kiểu, thêm ràng buộc).
 - Xóa cột.
 - Đổi tên bảng/cột.
@@ -134,17 +136,18 @@ Nếu một Model mới được tạo nhưng **không được import** ở đ�
 
 Các lệnh cần nhớ:
 
-| Lệnh | Ý nghĩa |
-|---|---|
+| Lệnh                                           | Ý nghĩa                                               |
+| ---------------------------------------------- | ----------------------------------------------------- |
 | `alembic revision --autogenerate -m "message"` | So sánh Model hiện tại với DB, tự sinh file migration |
-| `alembic upgrade head` | Áp dụng tất cả migration chưa chạy lên DB |
-| `alembic downgrade -1` | Lùi lại 1 bước migration gần nhất |
-| `alembic current` | Xem DB đang ở revision nào |
-| `alembic history` | Xem toàn bộ lịch sử migration |
+| `alembic upgrade head`                         | Áp dụng tất cả migration chưa chạy lên DB             |
+| `alembic downgrade -1`                         | Lùi lại 1 bước migration gần nhất                     |
+| `alembic current`                              | Xem DB đang ở revision nào                            |
+| `alembic history`                              | Xem toàn bộ lịch sử migration                         |
 
 ### 3.5 Vì sao PHẢI đọc lại file autogenerate, không được tin tưởng 100%?
 
 `--autogenerate` chỉ là **gợi ý dựa trên so sánh**, nó thường bỏ sót hoặc hiểu sai:
+
 - Đổi tên cột → Alembic hiểu nhầm thành "xóa cột cũ + thêm cột mới" (mất dữ liệu nếu chạy thẳng).
 - Một số thay đổi ràng buộc (server_default, check constraint) không phải lúc nào cũng detect đúng.
 - Thay đổi kiểu dữ liệu phức tạp (ví dụ Enum) cần chỉnh tay.
@@ -185,31 +188,3 @@ def downgrade():
 - `downgrade()`: thao tác ngược lại — **bắt buộc viết đúng**, vì đây là "nút undo" của bạn khi cần rollback.
 
 ---
-
-## 5. Những lỗi/nhầm lẫn phổ biến của người mới
-
-1. **Quên import Model vào nơi Alembic đọc `Base.metadata`** → autogenerate không thấy bảng mới.
-2. **Chạy autogenerate rồi upgrade luôn mà không đọc file** → dễ mất dữ liệu khi Alembic hiểu nhầm rename thành drop+create.
-3. **Sửa trực tiếp database bằng tay (qua GUI như pgAdmin)** rồi quên cập nhật lại migration → schema thật và lịch sử migration lệch nhau, về sau autogenerate sẽ sinh ra diff sai.
-4. **Nhiều người cùng code, tạo nhiều nhánh migration song song** → `down_revision` bị rối, cần `alembic merge` để gộp.
-5. **Không set `unique=True` / `index=True` ở tầng Model** khi cần, dẫn đến query chậm hoặc thiếu ràng buộc mà không nhận ra.
-6. **Đổi kiểu dữ liệu cột (ví dụ String → Integer) có dữ liệu cũ** mà không viết logic convert dữ liệu trong `upgrade()` → lỗi khi migrate trên DB đã có data thật.
-
----
-
-## 6. Checklist tự kiểm tra khi làm phần Model + Alembic
-
-- [ ] Model mới đã import đúng `Base` dùng chung cho toàn dự án chưa?
-- [ ] Đã chạy `alembic revision --autogenerate` và **đọc kỹ** file sinh ra chưa?
-- [ ] `downgrade()` có logic đúng (không để trống hoặc `pass`) không?
-- [ ] Các ràng buộc quan trọng (`ForeignKey`, `unique`, `nullable`) đã khai báo đúng ý đồ chưa?
-- [ ] Nếu đổi/xóa cột có dữ liệu thật, đã nghĩ đến việc mất dữ liệu chưa?
-- [ ] Đã thử `alembic downgrade` thử một lần để chắc chắn rollback hoạt động chưa?
-
----
-
-## 7. Tài liệu chính thức để tra cứu thêm
-
-- SQLAlchemy ORM: https://docs.sqlalchemy.org/en/20/orm/
-- Alembic: https://alembic.sqlalchemy.org/en/latest/
-- Alembic Autogenerate — giới hạn cần biết: https://alembic.sqlalchemy.org/en/latest/autogenerate.html

@@ -1,10 +1,10 @@
-# 📝 [Note] Tại sao API Login không dùng cấu trúc ResponseModel?
+# `🎯 Note về  API Login`
 
-**Tóm tắt:** Tài liệu này giải thích lý do tại sao API cấp phát Token (Login) phải trả về JSON phẳng theo chuẩn thay vì dùng class `ResponseModel` chung của dự án. (được tóm tắt bởi Gemini Pro)
+> Tài liệu này giải thích lý do tại sao API cấp phát Token (Login) phải trả về JSON phẳng theo chuẩn thay vì dùng class `ResponseModel` chung của dự án. (được tóm tắt bởi Gemini Pro)
 
 ---
 
-## 1. Vấn đề gặp phải
+## 1. Vấn đề
 
 Trong dự án, chúng ta sử dụng `ResponseModel` làm khuôn chuẩn cho toàn bộ API nhằm đảm bảo tính đồng nhất:
 

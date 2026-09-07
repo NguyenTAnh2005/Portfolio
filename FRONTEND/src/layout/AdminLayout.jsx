@@ -5,6 +5,8 @@ import { Menu, MoveLeft, LayoutDashboard, Info, AlarmClock, Folder, Trophy, User
 import { useState, useEffect } from "react";
 import { authService } from "../services/auth";
 import { cuttingString } from "../utils/string";
+import { decodeTokenAndGetTimeISO } from "../utils/decodePayload";
+import { Badge } from "../components/ui/Badge";
 
 import { useAuth } from "../contexts/AuthContext";
 
@@ -22,7 +24,7 @@ function AdminLayout(){
 }
 
 const AdminNavBar = () =>{
-    const {logout} = useAuth();
+    const {logout, accessToken} = useAuth();
     const navigate = useNavigate();
     const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -93,7 +95,18 @@ const AdminNavBar = () =>{
                     ))
 
                 }
-                <div className="flex-1"></div>
+                <div className="flex-1">
+                    <span>
+                        Hạn của token hiện tại:
+                    </span>
+                    <br></br>
+                    <Badge>
+                        <span>
+                            {decodeTokenAndGetTimeISO(accessToken)}
+                        </span>
+                    </Badge>
+
+                </div>
                 {
                     loading? <div className="text-xs text-center p-2">Đang tải...</div>
                     : <CurrentAdminInfo prop_data={currentInfo}/>

@@ -6,7 +6,7 @@ from fastapi import Form, File
 
 from app.core import cloudinary_config as cloudinary 
 from app.schemas import timeline as schemas_timeline
-from app.crud import timeline as timeline_crud
+from app.crud import timeline as crud_timeline
 
 from app.models.models import TimeLine
 
@@ -74,7 +74,7 @@ def create_timeline(
         start_end=start_end, sort_order=sort_order
     )
 
-    return timeline_crud.create(
+    return crud_timeline.create(
         db=db, data_create=data_create,
         img_url=img_data["secure_url"],
         img_public_id=img_data["public_id"]
@@ -111,7 +111,7 @@ def update_timeline(
     - 4. Xóa ảnh cũ và trả về đối tượng timeline đã cập nhật cho Router
     """
     # 0
-    db_timeline = timeline_crud.get_by_id(db=db, timeline_id= target_id)
+    db_timeline = crud_timeline.get_by_id(db=db, timeline_id= target_id)
     check_conflict(db=db, title=title, sort_order=sort_order, exclude_id=target_id)
     # 1
     # Pydantic này chỉ chứa các thông tin text thuần,
@@ -136,7 +136,7 @@ def update_timeline(
     new_public_id = None
     old_public_id = None
     if img_file:
-        db_timeline = timeline_crud.get_by_id(db=db, timeline_id=target_id)
+        db_timeline = crud_timeline.get_by_id(db=db, timeline_id=target_id)
         old_public_id = db_timeline.img_public_id
         print(f"old: {old_public_id}")
 
@@ -147,7 +147,7 @@ def update_timeline(
         new_secure_url = new_img["secure_url"]
         new_public_id = new_img["public_id"]
     # 3
-    updated_timeline = timeline_crud.update(
+    updated_timeline = crud_timeline.update(
         db=db, db_timeline=db_timeline,
         update_data=update_data,
         img_url=new_secure_url,
@@ -172,10 +172,10 @@ def delete_timeline(
     - Xóa ảnh dựa theo id_public
     - Trả về Message thông báo
     """
-    db_timeline = timeline_crud.get_by_id(db=db, timeline_id=target_id)
+    db_timeline = crud_timeline.get_by_id(db=db, timeline_id=target_id)
     deleted_img_public_id = db_timeline.img_public_id
 
-    timeline_crud.delete(db=db, db_timeline=db_timeline)
+    crud_timeline.delete(db=db, db_timeline=db_timeline)
 
     cloudinary.destroy_image(deleted_img_public_id)
 

@@ -1,4 +1,4 @@
-import {Navigate, Outlet} from 'react-router-dom';
+import {Outlet} from 'react-router-dom';
 import { useSystemConfig } from '../contexts/SystemConfigContext';
 import { Maintenance } from '../pages/Maintenance';
 

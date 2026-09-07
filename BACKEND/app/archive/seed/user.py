@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.models.models import User, RoleType
-from app.core.security import get_password_hash
+from BACKEND.app.core.jwt_token import get_password_hash
 
 def seed_user(db: Session):
     """ Tạo tài khoản Amdin đầu tiên!"""

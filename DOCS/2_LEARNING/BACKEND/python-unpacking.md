@@ -1,4 +1,6 @@
-# Guide: Unpacking trong Python (`*` và `**`)
+# Guide:
+
+## `🎯 Note Unpacking trong Python (* và **)`
 
 > Ghi chú kỹ thuật — dùng để tham khảo khi viết service/crud layer trong dự án portfolio.
 
@@ -26,10 +28,10 @@ Hai dòng trên **hoàn toàn tương đương**. `**cfg` yêu cầu Python "bun
 
 ## 2. Hai loại dấu `*` — đừng nhầm lẫn
 
-| Ký hiệu | Dùng cho | Ý nghĩa |
-|---|---|---|
-| `*args` | Positional arguments | Gom nhiều giá trị rời thành 1 **tuple** |
-| `**kwargs` | Keyword arguments | Gom nhiều `key=value` thành 1 **dict** |
+| Ký hiệu    | Dùng cho             | Ý nghĩa                                 |
+| ---------- | -------------------- | --------------------------------------- |
+| `*args`    | Positional arguments | Gom nhiều giá trị rời thành 1 **tuple** |
+| `**kwargs` | Keyword arguments    | Gom nhiều `key=value` thành 1 **dict**  |
 
 Dấu `*`/`**` xuất hiện ở **2 ngữ cảnh khác nhau**, dễ gây nhầm lẫn nếu không phân biệt rõ:
 
@@ -174,37 +176,20 @@ get_list(db, **cfg)
 
 ---
 
-## 6. Nâng cao (tùy chọn — không bắt buộc phải dùng ngay)
+## 6. Tóm tắt nhanh
 
-Nếu muốn Python/IDE tự kiểm tra cấu trúc dict config thay vì chỉ là `dict[str, Any]` thông thường, có thể khai báo `TypedDict`:
+<blockquote>
 
-```python
-from typing import TypedDict
-
-class QueryConfig(TypedDict):
-    skip: int
-    limit: int
-    sort_by: str
-    order: str
-
-INDEX_QUERY_CONFIG: dict[str, QueryConfig] = {
-    "project": {"skip": 0, "limit": 6, "sort_by": "sort_order", "order": "asc"},
-    ...
-}
-```
-
-Lợi ích: nếu thiếu key hoặc sai kiểu dữ liệu, IDE báo lỗi ngay lúc viết code thay vì đợi runtime. Không bắt buộc cho dự án hiện tại, nhưng đáng cân nhắc khi số lượng config tăng lên.
-
----
-
-## 7. Tóm tắt nhanh
-
-| Cú pháp | Ngữ cảnh | Tác dụng |
-|---|---|---|
-| `def f(*args)` | Định nghĩa hàm | Gom nhiều positional arg thành tuple |
-| `def f(**kwargs)` | Định nghĩa hàm | Gom nhiều keyword arg thành dict |
-| `f(*a_list)` | Gọi hàm | Bung list/tuple thành positional arg |
-| `f(**a_dict)` | Gọi hàm | Bung dict thành keyword arg |
-| `{**d1, **d2}` | Dict literal | Merge dict, key sau ghi đè key trước |
+| Cú pháp           | Ngữ cảnh       | Tác dụng                             |
+| ----------------- | -------------- | ------------------------------------ |
+| `def f(*args)`    | Định nghĩa hàm | Gom nhiều positional arg thành tuple |
+| `def f(**kwargs)` | Định nghĩa hàm | Gom nhiều keyword arg thành dict     |
+| `f(*a_list)`      | Gọi hàm        | Bung list/tuple thành positional arg |
+| `f(**a_dict)`     | Gọi hàm        | Bung dict thành keyword arg          |
+| `{**d1, **d2}`    | Dict literal   | Merge dict, key sau ghi đè key trước |
 
 **Nguyên tắc chọn dùng**: mỗi khi thấy mình đang gõ lặp lại `dict["key1"]`, `dict["key2"]`... để truyền vào cùng 1 hàm → đó là dấu hiệu nên dùng `**dict` thay thế.
+
+</blockquote>
+
+---

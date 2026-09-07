@@ -89,4 +89,16 @@ _Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi
 
 ### 3.10 Nâng cấp bảo mật
 
-- [] Tìm hiểu thêm về việc lưu trữ jwt token và sử dụng chúng.
+- [x] Tìm hiểu thêm về việc lưu trữ jwt token và sử dụng chúng.
+- **BACKEND**:
+  - [x] Thiết lập backend model lưu refresh token cùng với các pydantic class (schemas), crud cơ bản đi kèm.
+  - [x] Thiết kế lại service cho auth ( sửa login, bổ sung refresh).
+  - [x] Cài mkcert hỗ trợ chạy cung cấp CA cho phép chạy https ở backend.
+  - [x] Test API.
+- **FRONTEND**:
+  - [x] Chỉnh env đường dẫn Backend local.
+  - [x] Cải tạo AuthConext (access_token lưu useState, gọi ngầm refresh).
+  - [x] Cải tạo axiosInstance (yêu cầu trình duyệt tự đính kèm cookie mỗi khi gửi request).
+  - [x] Chạy web test.
+- Thêm:
+  - [x] Frontend có thể get và giải mã payload của token -> biết được Tg hết hạn phiên access (Test đồng bộ access_token, vì tạo mới access thì cũng tạo mới refresh nên chỉ lấy access thôi).

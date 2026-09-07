@@ -1,41 +1,186 @@
-from app.crud.user import get_user_by_email
-from app.core.security import  verify_password, create_access_token, get_current_user, get_current_admin
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
-from app.core.exception import AppException
 from fastapi import status
-from app.models.models import RoleType
+from app.core.config import settings
+from datetime import timedelta
+
+from typing import Optional
+
+from app.core.exception import AppException
+from app.core  import jwt_token as jwt_service, refresh_token as refresh_service
+from app.core import password 
+
+from app.crud import refresh_token as crud_token
+from app.schemas import refresh_token as schemas_token
+from app.crud import user as crud_user
+from app.models.models import RoleType, RefreshToken
 
 
 # Logic đăng nhập 
-def logic_login(db: Session, input_email: EmailStr, input_password: str):
+def login(db: Session, input_email: EmailStr, input_password: str):
     """
     1. Kiểm tra xem có user dựa theo email không (CRUD đã tự handle ném lỗi 404 nếu không có). 
-    2. Kiểm tra quyền user hiện tại có phải là Admin không mới cho đăng nhập.
-    3. Kiểm tra mật khẩu có trùng với mật khẩu lưu trong DB không.
-    4. Nếu oke thì tạo và trả về access_token.
+    2. Kiểm tra mật khẩu có trùng với mật khẩu lưu trong DB không.
+    3. Kiểm tra quyền user hiện tại có phải là Admin không mới cho đăng nhập.
+    4. Nếu oke thì tạo access_token, refresh_token.
     """
-    db_user=get_user_by_email(db=db, user_email=input_email)
+    db_user=crud_user.get_user_by_email(db=db, user_email=input_email)
+
+    is_valid_password = password.verify_password(plain_password=input_password, hashed_password=db_user.password)
+    if not is_valid_password:
+        raise AppException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            error_code="WRONG_PASSWORD",
+            message=f"❌ Email hoặc mật khẩu chưa chính xác. Vui lòng kiếm tra lại!"
+        )
 
     if db_user.role != RoleType.ADMIN:
         raise AppException(
             status_code=status.HTTP_403_FORBIDDEN,
             error_code= "NOT_ADMIN",
-            message="Chức năng đăng nhập hiện tại chỉ dành cho các tài khoản Admin!"
+            message=f"❌ Chức năng đăng nhập hiện tại chỉ dành cho các tài khoản Admin!"
         )
+    
+    # TẠO ACCESS TOKEN
+    # Chọn phần data muốn lưu vào JWT - payload - chứa thông tin -- Email và id user
+    data = {
+        "sub": db_user.email,
+        "data": db_user.id
+    }
+    jwt_access_token = jwt_service.create_jwt_token(data= data, expires_delta=None)
 
-    is_valid_password = verify_password(plain_password=input_password, hashed_password=db_user.password)
-    if not is_valid_password:
+    # TẠO REFRESH TOKEN
+    expires_delta_day = timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+
+    refresh_data = refresh_service.create_refresh_token(expires_delta_day=expires_delta_day)
+
+    create_token = schemas_token.Create(
+        user_id=db_user.id,
+        token_hash=refresh_data["refresh_token_hashed"],
+        expires_at=refresh_data["expire"]
+    )
+    crud_token.create(db=db, create_data=create_token)
+
+    # Trả về cho router
+    return {
+        "access_token": jwt_access_token,
+        "refresh_token_raw": refresh_data["refresh_token_raw"],
+        # đổi ra giây để lưu lên cookie
+        "expires_delta_day": expires_delta_day.total_seconds()
+    }
+
+# Helper nội bộ hỗ trợ trả lỗi nếu có xâm nhập 
+def _check_token_reused(db: Session, db_token: RefreshToken):
+    """
+    Khi phát hiện một token được gửi đến có giá trị revoked sẵn là True
+    -> Chứng tỏ có ai đó đang sử dụng một refresh cũ.
+    -> đã có người xâm nhập vì token này không dùng nữa, chẳng qua chưa hết hạn thôi.
+    -> revoked = True toàn bộ
+    -> Trả lỗi
+    """
+    if db_token.revoked == True:
+        crud_token.update_all_revoked(db=db, user_id=db_token.user_id)
         raise AppException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            error_code="WRONG_PASSWORD",
-            message="Email hoặc mật khẩu chưa chính xác. Vui lòng kiếm tra lại!"
+            error_code="INVALID_REFRESH_TOKEN",
+            message=f"❌ Phiên đăng nhập không hợp lệ, vui lòng đăng nhập lại."
         )
-    else:
-        # Chọn phần data muốn lưu vào JWT - payload - chứa thông tin -- Email và id user
-        data = {
-            "sub": db_user.email,
-            "data": db_user.id
-        }
-        jwt_signature = create_access_token(data= data, expires_delta=None)
-        return jwt_signature
+
+# logic yêu cầu cấp access token
+def refresh_access(db: Session, refresh_token: Optional[str] = None ):
+    """
+    Func xử lý logic khi FE call API yêu cầu 1 access_token mới - gọi ngầm
+    1. Nhận refresh_token ở request 
+    2. check refresh token tương ứng với user id nào, refresh token nào. 
+    3. Nếu tồn tại thì kiểm tra xem revoke có true ko
+    4. Nếu revoke = false -> đổi thành True 
+    -> tạo mới refresh và access_token
+    5. Tiện thể gọi hàm làm sạch bảng token này. 
+    6. trả về cho access_token refresh raw để bên router lưu lên cookie. 
+    """
+    # 1. Nhận refresh_token ở request 
+    if refresh_token is None:
+        raise AppException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            error_code="MISSING_REFRESH_TOKEN",
+            message=f"❌ Không tìm thấy phiên đăng nhập, vui lòng đăng nhập lại."
+        )
+    
+    # 2. check refresh token tương ứng với user id nào, refresh token nào.
+    refresh_token_hash = refresh_service.get_refresh_token_hash(token_raw=refresh_token)
+    db_token = crud_token.get_by_token(db=db, token_hash=refresh_token_hash)
+    db_user = crud_user.get_user(db=db, user_id=db_token.user_id)
+
+    # 3. Nếu tồn tại thì kiểm tra xem revoke có true ko 
+    _check_token_reused(db=db, db_token=db_token)
+
+    # 4. Nếu revoke = false -> đổi thành True 
+    crud_token.update_revoked(db=db, db_token=db_token)
+
+    # -> tạo mới access_token  
+    data = {
+        "data": db_token.user_id,
+        "sub" : db_user.email
+    }
+    expires_delta_minute = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = jwt_service.create_jwt_token(data=data, expires_delta=expires_delta_minute)
+
+    # và refresh token
+    expires_delta_day = timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    refresh_data = refresh_service.create_refresh_token(expires_delta_day=expires_delta_day)
+    create_token = schemas_token.Create(
+        user_id=db_token.user_id,
+        token_hash= refresh_data["refresh_token_hashed"],
+        expires_at= refresh_data["expire"]
+    )
+    crud_token.create(db=db, create_data=create_token)
+
+    # 5. Tiện thể gọi hàm làm sạch bảng token này.
+    crud_token.clean(db=db)
+
+    # trả về cho access_token refresh raw để bên router lưu lên cookie
+    return {
+        "access_token": access_token,
+        "refresh_token_raw": refresh_data["refresh_token_raw"],
+        # đổi ra giây để lưu lên cookie
+        "expires_delta_day": int(expires_delta_day.total_seconds())
+    }
+   
+# logic log out
+def logout(db:Session, refresh_token:str):
+    """
+    Function xử lý log out cho từng trình duyệt, tức chỉ đăng xuất đúng trên trình duyệt đó. 
+
+    1. Đọc Refresh Token từ cookie, hash, tìm đúng row
+    2. Kiểm tra Revoke - nếu False thid chuyển True bình thường, còn 
+    nếu True sẵn thì -> Revoked hết trên cùng 1 user 
+    (ảnh hưởng khi dùng thiết bị vì chưa thiết kế đa thiết bị - nhưng chịu r, cách này là ổn nhất)
+    3. Trả về kết quả tương ứng. 
+    """ 
+    # 1. Nhận refresh_token ở request 
+    if refresh_token is None:
+        raise AppException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            error_code="MISSING_REFRESH_TOKEN",
+            message=f"❌ Không tìm thấy phiên đăng nhập, vui lòng đăng nhập lại."
+        )
+    
+    refresh_token_hash = refresh_service.get_refresh_token_hash(token_raw=refresh_token)
+    db_token = crud_token.get_by_token(db=db, token_hash=refresh_token_hash)
+
+    _check_token_reused(db=db, db_token=db_token)
+
+    crud_token.update_revoked(db=db, db_token=db_token)
+
+    return
+
+# logic dọn dẹp token
+def clean_token(db:Session):
+    """
+    service hỗ trợ chủ động dọn dẹp bảng thay vì phải thông qua 
+    cấp access token mới dọn, đó chỉ là tiện thể.
+    """
+    crud_token.clean(db=db)
+    return
+
+

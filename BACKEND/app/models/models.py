@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Integer, Column, String, Boolean, ARRAY, ForeignKey, DateTime, Text, Enum as SQLEnum
+from sqlalchemy import Integer, Column, String, Boolean, ARRAY, ForeignKey, DateTime, Text, Enum as SQLEnum, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db_connection import Base
@@ -17,14 +17,32 @@ class RoleType(str, enum.Enum):
 # ================================
 class User(Base):
     __tablename__="users"
-
-    id = Column(Integer, primary_key = True, index = True)
-    username = Column(String, unique = True, nullable = False)
-    password = Column(String, nullable = False)
-    email = Column(String, unique = True, nullable = False)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String(50), unique=True, index=True)
+    password: Mapped[str] = mapped_column(String, nullable=False)
+    email: Mapped[str] = mapped_column(String, nullable=False, unique=True)
 
     # Map enum role type vào user model, mặc định là CLIENT
-    role = Column(SQLEnum(RoleType), default=RoleType.CLIENT, nullable=False)
+    role: Mapped[str] = mapped_column(SQLEnum(RoleType), default=RoleType.CLIENT, nullable=False)
+    # relationship với TOKEN 
+    refresh_token: Mapped[list["RefreshToken"]] = relationship(back_populates="user")
+
+# ================================
+# 8. Bảng TOKEN 
+# ================================
+
+class RefreshToken(Base):
+    __tablename__= "refresh_token"
+    # id, user_id, token_hash, expires_at, created_at, revoked
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    token_hash: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    expires_at: Mapped[datetime]= mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime]= mapped_column(DateTime(timezone=True), server_default=func.now())
+    revoked: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    # relationship 
+    user: Mapped["User"] = relationship(back_populates="refresh_token")
 
 
 # ================================
@@ -113,6 +131,7 @@ class SystemConfig(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
     value: Mapped[dict] = mapped_column(JSONB, nullable=False)
+
 
 
 

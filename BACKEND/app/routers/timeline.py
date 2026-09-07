@@ -5,13 +5,13 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.db_connection import connect_db
 from app.schemas.response import ResponseModel
-from app.core.security import get_current_admin
+from app.core import jwt_token as jwt_service
 from app.models.models import User
 from app.services.helper import to_optional_int
 
 from app.schemas import timeline as schemas_timeline
-from app.crud import timeline as timeline_crud
-from app.services import timeline as timeline_logic
+from app.crud import timeline as crud_timeline
+from app.services import timeline as logic_timeline
 
 BASE_URL = settings.BASE_API_URL
 
@@ -27,7 +27,7 @@ def create_timeline(
     sort_order: int = Form(...),
     img_file: UploadFile = File(...),
     db: Session = Depends(connect_db), 
-    current_admin: User = Depends(get_current_admin) 
+    current_admin: User = Depends(jwt_service.get_current_admin) 
 ):
     """
     ## API tạo mới timeline
@@ -37,7 +37,7 @@ def create_timeline(
     """
     # Do các trường bắt buộc nhập nên ko cần validate bên routers (nhập input ko juan)
 
-    new_timeline = timeline_logic.create_timeline(
+    new_timeline = logic_timeline.create_timeline(
         db=db, title=title, 
         organization=organization, desc=desc, 
         start_end=start_end, sort_order=sort_order,
@@ -59,7 +59,7 @@ def get_timeline(
         + Nhận id timeline và trả về kết quả tương ứng từ func bên crud.
         + Trả về kết quả dưới dạng ResponseModel
     """
-    found_timeline = timeline_crud.get_by_id(db=db, timeline_id=timeline_id)
+    found_timeline = crud_timeline.get_by_id(db=db, timeline_id=timeline_id)
     return ResponseModel(
         message=f"🎉 Timeline was found successfully.",
         data= found_timeline
@@ -78,7 +78,7 @@ def list_timelines(
         + Gọi hàm crud trả về danh sách, lưu biến kết quả
         + Trả về kết quả dưới dạng ResponseModel
     """
-    response = timeline_crud.get_all(
+    response = crud_timeline.get_all(
         db=db, skip=skip, limit=limit,
         sort_by=sort_by, order=order
     )
@@ -98,7 +98,7 @@ def update_timeline(
     sort_order: Optional[str] = Form(None),
     img_file: Union[UploadFile, str, None] = File(None),
     db: Session = Depends(connect_db), 
-    current_admin: User = Depends(get_current_admin) 
+    current_admin: User = Depends(jwt_service.get_current_admin) 
 ):
     """
     ## API cập nhật thông tin Timeline qua id
@@ -114,7 +114,7 @@ def update_timeline(
     # isinstance ktra xem có phải là chuỗi
     if isinstance(img_file, str) or (img_file and not img_file.filename):
         img_file = None
-    response = timeline_logic.update_timeline(
+    response = logic_timeline.update_timeline(
         db=db, target_id=timeline_id,
         title=title, organization=organization, 
         desc=desc, start_end=start_end, 
@@ -130,14 +130,14 @@ def update_timeline(
 def delete_timeline(
     timeline_id: int,
     db: Session = Depends(connect_db),
-    current_admin: User = Depends(get_current_admin)
+    current_admin: User = Depends(jwt_service.get_current_admin)
 ):
     """
     ## API xóa timeline. 
         + Gọi CRUD delete (xóa timeline --> call logic xóa ảnh) --> Logic (Xóa ảnh, trả message)
         + Trả về kết quả dưới dạng ResponseModel
     """
-    timeline_logic.delete_timeline(db=db, target_id=timeline_id)
+    logic_timeline.delete_timeline(db=db, target_id=timeline_id)
     return ResponseModel(
         message=f"🎉 The Timeline with ID [{timeline_id}] has been deleted successfully.",
         data=[]

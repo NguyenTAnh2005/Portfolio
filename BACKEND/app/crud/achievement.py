@@ -3,7 +3,7 @@ from fastapi import status
 from sqlalchemy import asc, desc
 from typing import Optional
 
-from app.core.security import AppException
+from app.core.exception import AppException
 from app.models.models import Achievement
 
 from app.schemas import achievement as schemas_achieve
