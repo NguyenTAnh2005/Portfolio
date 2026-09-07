@@ -8,7 +8,7 @@ from datetime import datetime
 
 from app.core.config import settings
 from app.models.models import User
-from app.core.security import get_current_admin
+from app.core import jwt_token as jwt_service
 
 from app.schemas.response import ResponseModel
 from app.schemas import achievement as schemas_achieve
@@ -68,10 +68,10 @@ def create_achievement(
     achieved_at: datetime = Form(
         ...,
         description="Định dạng ISO 8601 kèm timezone [YY-MM-DDTHH:MM:SS+Timezone] , ví dụ: 2025-11-16T14:30:00+07:00",
-        example="2025-11-16T14:30:00+07:00"
+        examples=["2025-11-16T14:30:00+07:00"]
     ),
     img_file: UploadFile = File(...),
-    current_admin: User = Depends(get_current_admin)
+    current_admin: User = Depends(jwt_service.get_current_admin)
 ):
     """
     ## API tạo mới achievement
@@ -95,7 +95,7 @@ def update_achievement(
     desc: Optional[str] = Form(None),
     achieved_at: Optional[datetime] = Form(None, description="Định dạng ISO 8601 kèm timezone [YY-MM-DDTHH:MM:SS+Timezone] , ví dụ: 2025-11-16T14:30:00+07:00"),
     img_file: Optional[Union[UploadFile, str, None]] = File(None),
-    current_admin: User = Depends(get_current_admin)
+    current_admin: User = Depends(jwt_service.get_current_admin)
 ):
     """
     ## API cập nhật thông tin Achievement qua id
@@ -121,7 +121,7 @@ def update_achievement(
 def delete_achievement(
     achievement_id: int,
     db: Session = Depends(connect_db),
-    current_admin: User = Depends(get_current_admin)
+    current_admin: User = Depends(jwt_service.get_current_admin)
 ):
     """
     ## API xóa Achievement. 

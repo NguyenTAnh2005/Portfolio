@@ -4,13 +4,13 @@ from sqlalchemy.orm import Session
 
 from app.schemas.response import ResponseModel
 from app.db_connection import connect_db
-from app.core.security import get_current_admin
+from app.core import jwt_token as jwt_service
 from app.models.models import User
 from app.core.config import settings
 
 from app.schemas import project as schemas_project
-from app.crud import project as project_crud
-from app.services import project as project_logic
+from app.crud import project as crud_project
+from app.services import project as logic_project
 
 BASE_URL = settings.BASE_API_URL
 router = APIRouter(
@@ -25,7 +25,7 @@ async def create_project(
     list_tech: Optional[list[str]] = Form(None), 
     project_url: str = Form(...),
     img_file: UploadFile = File(...),
-    current_admin : User = Depends(get_current_admin),
+    current_admin : User = Depends(jwt_service.get_current_admin),
 ):
     """
     ## API tạo mới. 
@@ -36,7 +36,7 @@ async def create_project(
         + 1. Gọi service logic create 
         + 2. Trả respone dưới dạng Response Model
     """
-    new_project = await project_logic.create_project(
+    new_project = await logic_project.create_project(
         db=db, title=title, project_url=project_url, 
         list_tech=list_tech, img_file=img_file
     )
@@ -55,7 +55,7 @@ def get_project(
         + Gọi hàm crud trả về thông tin project theo id.
         + Trả về kết quả dưới dạng ResponseModel
     """
-    db_project = project_crud.get_by_id(db=db, project_id=project_id)
+    db_project = crud_project.get_by_id(db=db, project_id=project_id)
     return ResponseModel(
         message="Project was found successfully.",
         data=db_project,
@@ -77,7 +77,7 @@ def list_projects(
         + Gọi hàm crud get_all_project. 
         + + Trả về kết quả dưới dạng ResponseModel.
     """
-    list_project = project_crud.get_all(
+    list_project = crud_project.get_all(
         db=db, skip= skip, limit= limit,
         sort_by=sort_by, order= order,
         title=title, tech=tech, lang=lang
@@ -93,7 +93,7 @@ async def update_project_text(
     project_id: int, 
     update_data: schemas_project.UpdateTextForm,
     db:Session = Depends(connect_db),
-    current_admin:User = Depends(get_current_admin)
+    current_admin:User = Depends(jwt_service.get_current_admin)
 ):
     """
     ## API cập nhật các field text cho Project
@@ -110,7 +110,7 @@ async def update_project_text(
         + Gọi hàm logic update.
         + Trả về kết quả kèm message.
     """
-    result = await project_logic.update_project_text_form(db=db, target_id=project_id, update_data=update_data)
+    result = await logic_project.update_project_text_form(db=db, target_id=project_id, update_data=update_data)
     return ResponseModel(
         message=f"🎉 Project was updated successfully.",
         data=result
@@ -121,7 +121,7 @@ def update_project_img(
     project_id: int,
     db: Session = Depends(connect_db),
     img_file: UploadFile = File(...),
-    current_admin: User = Depends(get_current_admin)
+    current_admin: User = Depends(jwt_service.get_current_admin)
 ):
     """
     ## API cập nhật các thuộc tính liên quan đến ảnh của models. 
@@ -132,7 +132,7 @@ def update_project_img(
         + 1. Tiến hành gọi hàm update ảnh bên logic 
         + 2. Trả về ResponeModel
     """
-    result = project_logic.update_project_img_file(
+    result = logic_project.update_project_img_file(
         db= db, target_id= project_id,
         img_file= img_file
     )
@@ -146,7 +146,7 @@ def update_project_img(
 async def sync_project(
     project_id: int,
     db: Session= Depends(connect_db),
-    current_admin: User = Depends(get_current_admin)
+    current_admin: User = Depends(jwt_service.get_current_admin)
 ):
     """
     ## API cập nhật đồng bộ thông tin project
@@ -154,7 +154,7 @@ async def sync_project(
         + 1. Gọi func logic bên service (func này xử lý -> gọi crud -> trả về object)
         + 2. Trả về đối tượng dưới dạng ResponseModel
     """
-    result = await project_logic.sync_project(db=db, target_id=project_id)
+    result = await logic_project.sync_project(db=db, target_id=project_id)
     return ResponseModel(
         message=f"🎉 Project was synced successfully.",
         data=result
@@ -164,7 +164,7 @@ async def sync_project(
 def delete_project(
     project_id: int,
     db: Session = Depends(connect_db),
-    current_admin: User = Depends(get_current_admin)
+    current_admin: User = Depends(jwt_service.get_current_admin)
 ):
     """
     ## API xóa Project theo id.
@@ -172,7 +172,7 @@ def delete_project(
         + 1. Gọi func logic xóa (tìm kiếm, xóa crud, xóa ảnh, xóa folder)
         + 2. Return chay kết quả xóa thành công (data rỗng)
     """
-    project_logic.delete_project(db=db, target_id=project_id)
+    logic_project.delete_project(db=db, target_id=project_id)
     return ResponseModel(
         message=f"🎉 The Project with ID [{project_id}] has been deleted successfully.",
         data=[]

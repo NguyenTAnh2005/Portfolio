@@ -1,50 +1,35 @@
-# Mã hóa mật khẩu 
-from passlib.context import CryptContext
-from datetime import datetime
-
 # Tạo JWT
-from datetime import timedelta, timezone
+from datetime import datetime, timedelta, timezone
 from jose import jwt
 
 # Giải mã JWT
-from app.core.exception import AppException
-from fastapi import Depends, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
+from app.core.exception import AppException
+from fastapi import Depends, status
+
+# Import cần thiết khác 
 from sqlalchemy.orm import Session
 from app.db_connection import connect_db
 from app.models import models
 from app.schemas.auth import TokenPayload
-
-# Import cần thiết khác 
 from typing import Optional
 from app.core.config import settings
 
-
-
 # ==========================================
-# 1. MÃ HÓA MẬT KHẨU (PASSWORD HASHING)
+# 1. TẠO JWT TOKEN
 # ==========================================
-# Cấu hình thuật toán bcrypt để băm pass 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated = "auto")
 
-def get_password_hash(password: str)-> str:
-    """ Băm mật khẩu gốc thành chuỗi mã hóa để lưu vào DB. """
-    return pwd_context.hash(password)
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """ So sánh mật khẩu người dùng nhập với mật khẩu đã băm trong DB. """
-    return pwd_context.verify(plain_password, hashed_password)
-
-# ==========================================
-# 2. TẠO ACCESS TOKEN (JWT)
-# ==========================================
 ALGORITHM = "HS256"
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+def create_jwt_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     """
     TẠO CHUỖI JWT.
-    - data: Nội dung muốn nhét vào token ( thường sẽ là {"sub":email, "data":user_id})
-    - expires_delta: Thời gian sống của token ( Nếu không truyền thì lấy mặc định từ .env)
+    - Tạo 1 JSON data (Payload) chứa:
+        + data: Nội dung muốn nhét vào token ( thường sẽ là {"sub":email, "data":user_id})
+        + expires_delta: Thời gian sống của token ( Nếu không truyền thì lấy mặc định từ .env)
+    - Mã hóa Header và Payload sang các chuỗi Base64, có thể dịch ngược về JSON
+    - Tạo signature bằng (payload, header, secret key) --> Signature
+    - Tạo chuỗi JWT bằng cách: HEADER.PAYLOAD.SIGNATURE 
     """
     # Tạo một bản sao data tránh làm thay đổi bản gốc
     to_encode = data.copy()
@@ -54,6 +39,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
         expires_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     expire = datetime.now(timezone.utc) + expires_delta
     # Nhét thêm trường expire vào payload của token 
+    # Tại sao lại là exp - Vì jwt họ cấu sẵn một hệ thống chuyên check thời hạn hết hạn trong payload dựa theo biến có tên là exp
+    # Họ làm với bảo mật khá cao nên sử dụng nó là rất ổn. 
     to_encode.update({"exp": expire})
 
     # Dùng hàm của thư viện jose mã hóa toàn bộ thành một chuỗi JWT
@@ -62,7 +49,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     return encoded_jwt
 
 # ==========================================
-# 3. GIẢI MÃ JWT VÀ KIỂM TRA QUYỀN 
+# 2. GIẢI MÃ JWT VÀ KIỂM TRA QUYỀN 
 # ==========================================
 
 # Cho biết đường dẫn API trả về Access Token để có thể sử dụng trên Swagger UI
@@ -72,6 +59,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl=token_url)
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(connect_db)) -> models.User:
     """Hàm giải mã token, trả về object user hiện tại."""
     try:
+        # Trong hàm decode thì thư viện jwt cũng hỗ trợ tự động giải xem token đã hết hạn qua biến exp ở JSON token gửi đến
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
         # Ép thông tin payload vào một khuôn schemas để tránh lộ nhiều thông tin cũng như xác thực cấu trúc
         token_data = TokenPayload(**payload)

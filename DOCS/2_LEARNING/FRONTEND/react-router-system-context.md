@@ -1,8 +1,8 @@
-# React Context & React Router
+# `🎯 Note về liên hệ giữa Context và Router`
 
----
+### Ví dụ đang áp dụng: Context system chứa các giá trị của system config.
 
-## Phần 1 — React render mọi thứ như thế nào (nền tảng bắt buộc phải hiểu trước)
+## Phần 1 — React render mọi thứ như thế nào
 
 **JSX không phải là "chạy code từ trên xuống dưới" như bạn viết. JSX chỉ là cú pháp để tạo ra một cây object (gọi là Element Tree).**
 
@@ -33,7 +33,7 @@ Sau đó React mới đi **duyệt cây này** và với mỗi node có `type` l
 
 ---
 
-## Phần 2 — React Context: giải quyết vấn đề gì, hoạt động ra sao
+## Phần 2 — React Context:
 
 ### 2.1 Vấn đề Context giải quyết: Prop Drilling
 
@@ -59,7 +59,7 @@ const MyContext = createContext(defaultValue); // 1. Tạo "kênh"
 const value = useContext(MyContext); // 3. Ở bất kỳ đâu bên trong nhánh đó, "hút" giá trị ra
 ```
 
-### 2.3 Cơ chế thật sự bên dưới (đây là chỗ quan trọng nhất, ít ai để ý)
+### 2.3 Cơ chế
 
 Khi 1 component gọi `useContext(MyContext)`, React làm việc sau:
 
@@ -182,7 +182,7 @@ Cách bạn đang viết (return `StatusLoading` thay vì render `Provider` + ov
 
 ---
 
-## Phần 3 — React Router: `<Routes>` không phải component bình thường
+## Phần 3 — React Router: `<Routes>`
 
 ### 3.1 Điểm khác biệt cốt lõi
 
@@ -302,22 +302,32 @@ Vì bạn có N trang con (`ClientRoutes` chứa rất nhiều page), viết che
 
 ## Phần 6 — Ráp lại toàn bộ: cây thực tế của app bạn nên trông như thế nào
 
-```
-<AuthProvider>                          ← Context: thông tin login (toàn app cần, kể cả login page check redirect)
+```jsx
+<AuthProvider>
+  {" "}
+  ← Context: thông tin login (toàn app cần, kể cả login page check redirect)
   <BrowserRouter>
     <Routes>
-      <Route path="log-in" element={<Login/>}/>
+      <Route path="log-in" element={<Login />} />
 
-      <Route element={
-          <SystemConfigProvider>        ← Context: config, CHỈ nhánh Client cần
-              <ProtectedConfig/>        ← Guard: đọc Context trên, quyết định chặn hay <Outlet/>
+      <Route
+        element={
+          <SystemConfigProvider>
+            {" "}
+            ← Context: config, CHỈ nhánh Client cần
+            <ProtectedConfig /> ← Guard: đọc Context trên, quyết định chặn hay{" "}
+            <Outlet />
           </SystemConfigProvider>
-      }>
-          <Route path="/*" element={<ClientRoutes/>}/>   ← Route con, render vào <Outlet/> của ProtectedConfig
+        }
+      >
+        <Route path="/*" element={<ClientRoutes />} /> ← Route con, render vào{" "}
+        <Outlet /> của ProtectedConfig
       </Route>
 
-      <Route element={<ProtectedRoute/>}>   ← Guard: đọc AuthContext, KHÔNG cần SystemConfig
-          <Route path="/admin/*" element={<AdminRoutes/>}/>
+      <Route element={<ProtectedRoute />}>
+        {" "}
+        ← Guard: đọc AuthContext, KHÔNG cần SystemConfig
+        <Route path="/admin/*" element={<AdminRoutes />} />
       </Route>
     </Routes>
   </BrowserRouter>
@@ -328,16 +338,3 @@ Vì bạn có N trang con (`ClientRoutes` chứa rất nhiều page), viết che
 2. Provider/Guard cần bọc quanh nhánh nào thì nhét vào `element` của `<Route>` bao ngoài nhánh đó (Phần 3.3) — và Context chỉ "nhìn thấy" được trong đúng nhánh mà nó bọc (Phần 2.3).
 
 ---
-
-## Tóm tắt 1 dòng cho mỗi khái niệm
-
-| Khái niệm                        | Bản chất                                                                               |
-| -------------------------------- | -------------------------------------------------------------------------------------- |
-| `createContext()`                | Tạo 1 "kênh" truyền dữ liệu xuyên cây, mặc định rỗng (`undefined`)                     |
-| `<Context.Provider value={...}>` | "Bơm" giá trị vào kênh, chỉ có hiệu lực với nhánh JSX nằm bên trong nó                 |
-| `useContext(Context)`            | Đi ngược lên cây tìm Provider gần nhất; không thấy → trả về default                    |
-| `<Routes>`                       | Đọc cấu trúc `<Route>` con **trước khi** render, để dựng bảng path → element           |
-| `<Route element={...}>`          | Vùng "an toàn" để nhét bất kỳ component/Provider nào — Routes không quan tâm bên trong |
-| `<Outlet/>`                      | Vị trí trong route cha nơi route con sẽ được chèn vào                                  |
-| `<Navigate to="...">`            | Component gây điều hướng URL khi được render                                           |
-| Protected Route                  | Chỉ là `if (điều_kiện) return chặn; else return <Outlet/>`                             |

@@ -2,7 +2,7 @@ from urllib.parse import urlparse
 
 #github API
 import httpx
-from app.core.security import AppException
+from app.core.exception import AppException
 from fastapi import status
 from app.core.config import settings
 from app.schemas.response import ResponseModel

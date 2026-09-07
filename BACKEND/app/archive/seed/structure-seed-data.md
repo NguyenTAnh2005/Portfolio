@@ -1,8 +1,8 @@
-## Phân bổ cấu trúc các file seed data (cre: Claude)
+# `🎯 Note về cấu trúc các file seed data`
 
 **Nguyên tắc:** file logic của từng model chỉ nên làm đúng 1 việc — nhận vào 1 `db: Session` có sẵn, rồi thêm data. Không tự mở session, không tự try/except, không tự commit.
 
-```
+```bash
 BACKEND/
 ├── app/
 │   └── seed/
@@ -39,33 +39,6 @@ def seed_user(db: Session):
 
 Chú ý: **không có `db.commit()` ở đây nữa** — commit sẽ do lớp runner quyết định (1 chỗ duy nhất, atomic cho toàn bộ).
 
-## Runner dùng chung khi đang test riêng từng model
-
-Vì bạn đang trong giai đoạn "mỗi chặng test 1 file riêng", thay vì mỗi file tự viết lại try/except/session, làm 1 script runner nhỏ dùng chung tạm thời:
-
-```python
-# run_seed.py  (script tạm để test 1 seed function trong lúc dev)
-from app.db_connection import SessionLocal
-
-def run(seed_func):
-    db = SessionLocal()
-    try:
-        seed_func(db)
-        db.commit()
-        print(f"✅ {seed_func.__name__} chạy thành công!")
-    except Exception as e:
-        db.rollback()
-        print(f"❌ Lỗi: {e}")
-    finally:
-        db.close()
-
-if __name__ == "__main__":
-    from app.seed.seed_info import seed_info  # đổi tên khi muốn test model khác
-    run(seed_info)
-```
-
-Vậy là chỉ có **1 chỗ** viết logic try/except/session, dùng lại được cho bất kỳ model nào.
-
 ## Khi gộp thành `seed_data.py` tổng (sau này)
 
 ```python
@@ -93,7 +66,3 @@ if __name__ == "__main__":
 ```
 
 Cấu trúc này về sau chỉ cần chạy `python seed_data.py` là seed hết, và nếu 1 bước lỗi giữa chừng thì rollback toàn bộ (atomic) — tránh tình trạng data nửa vời.
-
-## Về phần "reset database"
-
-Khi cần reset mà không đổi cấu trúc bảng, hướng đi thường dùng là `TRUNCATE ... RESTART IDENTITY CASCADE` cho từng bảng (hoặc tất cả), rồi chạy lại `seed_data.py`.

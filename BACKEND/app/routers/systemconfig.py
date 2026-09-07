@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.db_connection import connect_db
 from app.schemas.response import ResponseModel
-from app.core.security import get_current_admin
+from app.core import jwt_token as jwt_service
 from app.models.models import User
 
 from app.schemas import systemconfig as schemas_sys_config
@@ -22,7 +22,7 @@ router = APIRouter(
 def create_config(
     create_data: schemas_sys_config.Create,
     db: Session = Depends(connect_db), 
-    current_admin: User = Depends(get_current_admin) 
+    current_admin: User = Depends(jwt_service.get_current_admin) 
 ):
     """
     ## API tạo mới System config 
@@ -73,7 +73,7 @@ def update_config(
     system_config_id: int,
     update_data: schemas_sys_config.Update,
     db: Session = Depends(connect_db), 
-    current_admin: User = Depends(get_current_admin) 
+    current_admin: User = Depends(jwt_service.get_current_admin) 
 ):
     """
     ## API cập nhật thông tin Timeline qua id
@@ -90,7 +90,7 @@ def update_config(
 def delete_config(
     system_config_id: int,
     db: Session = Depends(connect_db),
-    current_admin: User = Depends(get_current_admin)
+    current_admin: User = Depends(jwt_service.get_current_admin)
 ):
     """
     ## API xóa system_config. 

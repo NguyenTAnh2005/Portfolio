@@ -1,4 +1,4 @@
-# Quản lý migration database (versioning schema DB)
+﻿# Quản lý migration database (versioning schema DB)
 alembic==1.18.1
 
 # Hash password bằng thuật toán bcrypt
@@ -18,9 +18,6 @@ httpx==0.28.1
 # (thường dùng chung với bcrypt)
 passlib==1.7.4
 
-# Trình quản lý package Python
-pip==25.3
-
 # Driver kết nối PostgreSQL cho Python
 psycopg2-binary==2.9.11
 
@@ -28,10 +25,13 @@ psycopg2-binary==2.9.11
 # (đọc .env rất tiện)
 pydantic-settings==2.12.0
 
+# Validate  email
+email-validator==2.2.0
+
 # Làm JWT token (access token, auth)
 python-jose==3.5.0
 
-# Hỗ trợ upload file/form-data  -- DÙng OAuth2Form nên cần thằng này để gửi request form lên fastAPI
+# Hỗ trợ upload file/form-data  -- Dùng OAuth2Form nên cần thằng này để gửi request form lên fastAPI
 python-multipart==0.0.21
 
 # ASGI server chạy FastAPI

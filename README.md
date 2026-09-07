@@ -13,27 +13,27 @@
 ### 📍 Chặng 1: Core Foundation (Nền tảng kiến trúc)
 
 - Mục tiêu: Thiết lập môi trường, cấu trúc thư mục chuẩn, tạo database cơ bản.
-- Chi tiết công việc: [Chang1_List_Task.md](./DOCS/1_PHASES/Chang1_List_Task.md).
+- Chi tiết công việc: [`Chang1_List_Task.md`](./DOCS/1_PHASES/Chang1_List_Task.md).
 
 ## 📍 Chặng 2: Module Authentication & User (Xác thực & Người dùng)
 
 - Mục tiêu: Hoàn thiện luồng đăng nhập, bảo mật JWT, điều hướng website.
-- Chi tiết công việc: [Chang2_List_Task.md](./DOCS/1_PHASES/Chang2_List_Task.md)
+- Chi tiết công việc: [`Chang2_List_Task.md`](./DOCS/1_PHASES/Chang2_List_Task.md)
 
 ## 📍 Chặng 3: Module Pages (Các pages nội dung của website)
 
 - Mục tiêu: Thiết kế các page bên client: Bên phía frontend thì gửi req --> backend lấy data và trả về --> frontend lấy data, mapping và hiển thị lên UI.
-- Chi tiết công việc: [Chang3_List_Task.md](./DOCS/1_PHASES/Chang3_List_Task.md).
+- Chi tiết công việc: [`Chang3_List_Task.md`](./DOCS/1_PHASES/Chang3_List_Task.md).
 
 ## 📍 Chặng 4: Module Managerment (Quản lý web)
 
 - Mục tiêu: Xây dựng hệ quản lý các đối tượng (info, timeline, project, achievement ).
-- Chi tiết công việc: [Chang4_List_Task.md](./DOCS/1_PHASES/Chang4_List_Task.md).
+- Chi tiết công việc: [`Chang4_List_Task.md`](./DOCS/1_PHASES/Chang4_List_Task.md).
 
 ## 📍 Chặng 5: Tối ưu hóa & Triển khai (Optimization & Deployment)
 
 - Mục tiêu: Tối ưu mã nguồn, review code hợp lý. Cắt tỉa dự án. Đưa dự án lên môi trường production.
-- Chi tiết công việc: [Chang5_List_Task.md](./DOCS/1_PHASES/Chang5_List_Task.md).
+- Chi tiết công việc: [`Chang5_List_Task.md`](./DOCS/1_PHASES/Chang5_List_Task.md).
 
 ## Cấu trúc thư mục (chỉ liệt kê các mục đáng chú ý):
 
@@ -52,7 +52,6 @@
 │   ├── 📝 README.md
 │   ├── 🐍 main.py           # File chạy chính của Backend
 │   ├── 📄 requirements.txt. # File lưu trữ phiên bản, tên các thư viện
-│   └── 🐍 seed_data.py      # File chạy data ban đầu cần có (admin đầu tiên)
 │
 │
 ├── 📁 DATABASE
@@ -88,12 +87,6 @@
 │   │   ├── 📝 ..v.v.
 │   └── 📁 2_LEARNING
 │       ├── 📁 BACKEND
-│       │   ├── 📝 fastapi-model-alembic-guide.md
-│       │   ├── 📝 .v.v.
 │       ├── 📁 FRONTEND
-│       │   ├── 📝 axios-service-guide.md
-│       │   └── 📝 .v.v.
 │       └── 📁 NOTES
-│           └── 📝 note-api-login.md
-│           └── 📝 .v.v.
 ```

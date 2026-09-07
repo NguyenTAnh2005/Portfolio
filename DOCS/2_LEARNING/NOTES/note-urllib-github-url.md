@@ -1,3 +1,5 @@
+# `🎯 Note về xử lý chuỗi url github repo`
+
 ```python
 from urllib.parse import urlparse
 
@@ -28,11 +30,15 @@ def parse_github_url(url: str) -> tuple[str, str]:
     return owner, repo
 ```
 
+---
+
 `tuple` giống như `list`, nhưng **không thể thay đổi sau khi tạo** (immutable) — dùng khi bạn muốn gom một nhóm giá trị cố định lại với nhau, ví dụ ở đây là "1 cặp owner-repo luôn đi kèm nhau".
 
 `tuple[str, str]` trong khai báo kiểu (type hint) nghĩa là: "hàm này trả về 1 tuple gồm đúng 2 phần tử, cả 2 đều là string".
 
-Có 2 cách để lấy giá trị ra khi gọi hàm bên `github_service.py`:
+<blockquote>
+
+## Cách lấy giá trị khi gọi hàm bên `github_service.py`:
 
 **Cách 1 — unpack trực tiếp (khuyến khích, ngắn gọn nhất):**
 
@@ -51,20 +57,9 @@ owner = result[0]
 repo = result[1]
 ```
 
-Cách 1 là cách người ta hay dùng nhất vì Python cho phép "unpack" (giải nén) tuple ngay lúc gán biến — miễn số biến bên trái khớp đúng số phần tử của tuple bên phải.
+</blockquote>
 
-## Ghép vào `github_service.py` của bạn
-
-Đoạn gọi hàm cũ:
-
-```python
-parts = url.rstrip("/").split("/")
-if len(parts) < 2:
-    raise HTTPException(...)
-owner_repo = f"{parts[-2]}/{parts[-1]}"
-```
-
-Thay bằng:
+## Ghép vào `github_service.py`
 
 ```python
 from app.utils.github_utils import parse_github_url  # import hàm mới
@@ -75,10 +70,10 @@ async def get_reposity_info(url: str):
     except ValueError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="🤡 Github URL is not valid! Try Again!"
+            detail=" Github URL is not valid! Try Again!"
         )
     owner_repo = f"{owner}/{repo}"
     # phần code phía dưới giữ nguyên...
 ```
 
-Lưu ý: `parse_github_url` raise `ValueError` (lỗi Python thuần), còn service của bạn cần raise `HTTPException` (lỗi FastAPI hiểu được để trả về client) — nên phải bắt bằng `try/except` để "chuyển đổi" loại lỗi như trên.
+Lưu ý: `parse_github_url` raise `ValueError` (lỗi Python thuần), còn service dự án cần raise `HTTPException` (lỗi FastAPI hiểu được để trả về client) — nên phải bắt bằng `try/except` để "chuyển đổi" loại lỗi như trên.

@@ -1,10 +1,12 @@
+# `🎯 Note về Pagination`
+
 ### Lưu ý:
 
 `count_page = Math.floor(total/limit) + 1` sai khi `total` chia hết cho `limit`. Ví dụ `total=10, limit=5` → ra 3 trang, đúng ra chỉ có 2. Phải dùng `Math.ceil(total/limit)`.
 
-## Về việc tổ chức prop/callback — đây là chỗ đáng nói nhất
+## Về việc tổ chức prop/callback
 
-Vấn đề gốc không chỉ là gõ nhầm tên, mà là **`Pagination` đang biết quá nhiều về cách cha tính `skip`** (`skip + (page_num - current_page) * limit`). Component con lẽ ra không cần biết `skip` là gì cả — nó chỉ cần báo "người dùng muốn qua trang số mấy", còn việc tính `skip` là việc của cha (người sở hữu state).
+Vấn đề gốc: **`Pagination` đang biết quá nhiều về cách cha tính `skip`** (`skip + (page_num - current_page) * limit`). Component con lẽ ra không cần biết `skip` là gì cả — nó chỉ cần báo "người dùng muốn qua trang số mấy", còn việc tính `skip` là việc của cha (người sở hữu state).
 
 Quy tắc chung nên theo:
 
@@ -78,5 +80,3 @@ So với bản cũ, cái lợi là:
 1. `Pagination` giờ là component "câm" hoàn toàn — không tự tính toán skip, chỉ báo sự kiện. Sau này tái sử dụng cho trang Blog/Achievement khác cũng không cần sửa gì bên trong nó.
 2. Không còn phép tính `(page_num - current_page) * limit` rối rắm trong component con nữa — nguồn gây `NaN` biến mất luôn vì cách tiếp cận đổi hẳn, không chỉ vá lỗi gõ nhầm tên.
 3. Dễ debug hơn: nếu sau này lại có `NaN`, bạn chỉ cần nhìn 1 chỗ (`handlePageChange` ở cha) thay vì lần theo props qua 2 tầng component.
-
-Một lỗi nhỏ khác nên dọn: xoá `console.log(current_page)` còn sót lại, và 2 hàm rỗng `PagePrev`/`PageNext` commented — nếu chưa làm thì có thể xoá hẳn, cần thì làm lại sau khi phân trang cơ bản chạy ổn (điều bạn đang ưu tiên là đúng hướng — làm phân trang không lọc chạy tốt trước, search/filter để sau).

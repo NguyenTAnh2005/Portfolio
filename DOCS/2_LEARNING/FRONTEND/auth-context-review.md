@@ -1,4 +1,4 @@
-## Đọc lại AuthContext — từng mảnh ghép
+# `🎯 Note về AuthContext `
 
 Trước tiên, hình dung bằng sơ đồ luồng dữ liệu:
 ![alt text](image.png)

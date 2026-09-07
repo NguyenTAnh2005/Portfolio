@@ -1,4 +1,4 @@
-
+/* eslint-disable react-refresh/only-export-components */
 //  1 provider  chứa fetch 3 biến từ backend bỏ về 3 useState
 // Gom các giá trị bỏ vào 1 biến value
 // Trả về 1 provider có value = value
@@ -21,16 +21,19 @@ export const SystemConfigProvider = ({children}) =>{
     useEffect(()=>{
         let isMounted = true;
         const fetchData = async () =>{
-            if (isMounted){
-                try {
+            try {
+                if(isMounted){
                     const response = await systemConfigService.getAll(queryParam);
                     setData(response);
-                } catch (err) {
+                }
+            } catch (err) {
+                if(isMounted){
                     console.error("Lỗi: ", err.message);
                     setError(err.message);
-
                 }
-                finally{
+            }
+            finally{
+                if(isMounted){
                     setLoading(false);
                 }
             }

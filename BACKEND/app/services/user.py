@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.schemas.user import UserUpdateInfo, UserUpdatePassword
-from app.core.security import verify_password, get_password_hash
+from app.core import jwt_token as jwt_service
 from app.core.exception import AppException
 from fastapi import status
 from app.schemas.user import UserUpdateInfo, UserUpdatePassword
@@ -71,14 +71,14 @@ def logic_update_password(db:Session, current_user_id: int, target_user_id: int,
     """
     check_true_account(current_user_id= current_user_id, target_user_id= target_user_id)
     db_user = get_user(db=db, user_id=target_user_id)
-    is_valid_password = verify_password(plain_password=update_data.old_password, hashed_password=db_user.password)
+    is_valid_password = jwt_service.verify_password(plain_password=update_data.old_password, hashed_password=db_user.password)
     if not is_valid_password:
         raise AppException(
             status_code= status.HTTP_401_UNAUTHORIZED,
             error_code="NOT_VALID_OLD_PASSWORD",
             message="Mật khẩu cũ không chính xác, chưa thể thay đổi mật khẩu mới!"
         )
-    hashed_new_password = get_password_hash(update_data.new_password)
+    hashed_new_password = jwt_service.get_password_hash(update_data.new_password)
     return update_password(db=db, target_user_id=target_user_id, new_hashed_password=hashed_new_password)
 
 

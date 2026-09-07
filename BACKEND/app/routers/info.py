@@ -1,10 +1,10 @@
 from app.core.config import settings
 
 from fastapi import APIRouter, Depends
-from app.core.security import get_current_admin
+from app.core import jwt_token as jwt_service
 from app.schemas.response import ResponseModel
 from sqlalchemy.orm import Session
-from app.models.models import Info, User
+from app.models.models import User
 from app.services import info as logic_info
 from app.schemas import info as schemas_info
 
@@ -33,7 +33,7 @@ def get_info(info_id: int, db: Session = Depends(connect_db)):
 def update_info(
     info_id: int, update_data: schemas_info.Update, 
     db: Session = Depends(connect_db),
-    current_admin: User = Depends(get_current_admin)
+    current_admin: User = Depends(jwt_service.get_current_admin)
 ):
     """
     ## API Cập nhật thông tin info:

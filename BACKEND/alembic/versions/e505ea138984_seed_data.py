@@ -1,10 +1,11 @@
 """seed data
 
-Revision ID: 7d98509cee74
-Revises: 0df31e647681
-Create Date: 2026-08-17 10:59:37.988144
+Revision ID: e505ea138984
+Revises: 1b0d4f066177
+Create Date: 2026-08-31 13:42:26.958061
 
 """
+
 
 from typing import Sequence, Union
 
@@ -14,11 +15,11 @@ from sqlalchemy.dialects import postgresql
 from datetime import datetime, timezone, timedelta
 
 from app.core.config import settings
-from app.core.security import get_password_hash
+from BACKEND.app.core.jwt_token import get_password_hash
 
 # revision identifiers, used by Alembic.
-revision: str = '7d98509cee74'
-down_revision: Union[str, Sequence[str], None] = '0df31e647681'
+revision: str = 'e505ea138984'
+down_revision: Union[str, Sequence[str], None] = '1b0d4f066177'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -275,7 +276,13 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Downgrade schema."""
+    """seed data
+
+    Revision ID: 7d98509cee74
+    Revises: 0df31e647681
+    Create Date: 2026-08-17 10:59:37.988144
+
+    """
     op.execute("DELETE FROM USERS;")
     op.execute("DELETE FROM INFO;")
     op.execute("DELETE FROM TIMELINE;")
